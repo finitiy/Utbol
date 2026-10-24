@@ -35,7 +35,18 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
           <span className="text-[10px] tracking-tight mt-1">Bosh sahifa</span>
         </button>
 
-        {/* Tab 2: Live */}
+        {/* Tab 2: TV Channels (IPTV) */}
+        <button
+          onClick={() => onSelectTab('channels')}
+          className={`flex flex-col items-center justify-center min-h-[44px] min-w-[44px] ${
+            currentTab === 'channels' ? 'text-emerald-400 font-semibold' : 'text-slate-400'
+          }`}
+        >
+          <Radio className="w-5 h-5" />
+          <span className="text-[10px] tracking-tight mt-1">Kanallar</span>
+        </button>
+
+        {/* Tab 3: Live */}
         <button
           onClick={() => onSelectTab('live')}
           className={`relative flex flex-col items-center justify-center min-h-[44px] min-w-[44px] ${
@@ -47,17 +58,6 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
           {liveMatchesCount > 0 && (
             <span className="absolute top-1 right-3 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
           )}
-        </button>
-
-        {/* Tab 3: Today's Matches */}
-        <button
-          onClick={() => onSelectTab('today')}
-          className={`flex flex-col items-center justify-center min-h-[44px] min-w-[44px] ${
-            currentTab === 'today' ? 'text-emerald-400 font-semibold' : 'text-slate-400'
-          }`}
-        >
-          <Calendar className="w-5 h-5" />
-          <span className="text-[10px] tracking-tight mt-1">Bugun</span>
         </button>
 
         {/* Tab 4: Standings */}

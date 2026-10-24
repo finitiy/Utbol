@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { User } from '../types/index.ts';
-import { Shield, User as UserIcon, Send, Smartphone } from 'lucide-react';
+import { Shield, User as UserIcon, Send, Smartphone, Tv } from 'lucide-react';
 
 interface HeaderProps {
   currentTab: string;
@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => onSelectTab('home')}
-              className="flex items-center gap-2.5 text-left focus:outline-none"
+              className="flex items-center gap-2.5 text-left focus:outline-none cursor-pointer"
             >
               <img
                 src="/src/assets/images/futbol_live_logo_1792839249424.jpg"
@@ -56,19 +56,28 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
 
-          {/* Zone 2: 4-5 clean single-line nav links */}
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          {/* Zone 2: Navigation Links */}
+          <nav className="hidden md:flex items-center gap-5 text-sm font-medium">
             <button
               onClick={() => onSelectTab('home')}
-              className={`whitespace-nowrap transition-colors ${
+              className={`whitespace-nowrap transition-colors cursor-pointer ${
                 currentTab === 'home' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >
               Bosh sahifa
             </button>
             <button
+              onClick={() => onSelectTab('channels')}
+              className={`whitespace-nowrap transition-colors flex items-center gap-1.5 cursor-pointer ${
+                currentTab === 'channels' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <Tv className="w-4 h-4 text-emerald-400" />
+              <span>Telekanallar</span>
+            </button>
+            <button
               onClick={() => onSelectTab('live')}
-              className={`whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+              className={`whitespace-nowrap transition-colors flex items-center gap-1.5 cursor-pointer ${
                 currentTab === 'live' ? 'text-rose-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >
@@ -77,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               onClick={() => onSelectTab('today')}
-              className={`whitespace-nowrap transition-colors ${
+              className={`whitespace-nowrap transition-colors cursor-pointer ${
                 currentTab === 'today' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >
@@ -85,15 +94,15 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               onClick={() => onSelectTab('matches')}
-              className={`whitespace-nowrap transition-colors ${
+              className={`whitespace-nowrap transition-colors cursor-pointer ${
                 currentTab === 'matches' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >
-              O'yinlar taqvimi
+              Taqvim
             </button>
             <button
               onClick={() => onSelectTab('standings')}
-              className={`whitespace-nowrap transition-colors ${
+              className={`whitespace-nowrap transition-colors cursor-pointer ${
                 currentTab === 'standings' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >
@@ -101,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               onClick={() => onSelectTab('favorites')}
-              className={`whitespace-nowrap transition-colors ${
+              className={`whitespace-nowrap transition-colors cursor-pointer ${
                 currentTab === 'favorites' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >

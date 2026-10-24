@@ -11,6 +11,7 @@ import { HeroSpotlight } from './components/HeroSpotlight.tsx';
 import { MatchCard } from './components/MatchCard.tsx';
 import { MatchStreamModal } from './components/MatchStreamModal.tsx';
 import { StandingsView } from './components/StandingsView.tsx';
+import { TvChannelsView } from './components/TvChannelsView.tsx';
 import { TelegramHub } from './components/TelegramHub.tsx';
 import { AuthModal } from './components/AuthModal.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
@@ -26,7 +27,8 @@ import {
   ShieldCheck, 
   RefreshCw,
   Send,
-  Smartphone
+  Smartphone,
+  Radio
 } from 'lucide-react';
 
 export default function App() {
@@ -236,11 +238,42 @@ export default function App() {
 
       {/* 3. Main Body Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-        {/* VIEW: STANDINGS */}
-        {currentTab === 'standings' ? (
+        {/* VIEW: TV CHANNELS (IPTV) */}
+        {currentTab === 'channels' ? (
+          <TvChannelsView />
+        ) : currentTab === 'standings' ? (
           <StandingsView leagues={leagues} />
         ) : (
           <>
+            {/* Quick IPTV Channels Bar on Home */}
+            {currentTab === 'home' && (
+              <div className="p-4 bg-gradient-to-r from-emerald-950/70 via-slate-900 to-slate-950 border border-emerald-500/30 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                    <Radio className="w-5 h-5 animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm sm:text-base font-extrabold text-white flex items-center gap-2">
+                      <span>Jonli Telekanallar (Sport TV, UzReport, Futbol TV, Setanta)</span>
+                      <span className="px-2 py-0.5 text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full">
+                        IPTV JONLI
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Barcha asosiy sport telekanallarini to'g'ridan-to'g'ri ilovada tomosha qiling (.m3u8)
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setCurrentTab('channels')}
+                  className="px-4 py-2 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-xl transition-all shrink-0 flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20 active:scale-95"
+                >
+                  <Tv className="w-4 h-4" />
+                  <span>Kanallarni ochish →</span>
+                </button>
+              </div>
+            )}
+
             {/* Hero Spotlight (Rendered on Home or Live) */}
             {currentTab === 'home' && featuredMatch && (
               <HeroSpotlight
