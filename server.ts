@@ -503,6 +503,35 @@ app.get('/api/teams', (req: Request, res: Response) => {
   return res.json({ teams });
 });
 
+// Transparent proxy for direct Football-Data.org API calls (avoids browser CORS and protects API keys)
+app.use('/api/football-data', async (req: Request, res: Response) => {
+  const subpath = req.url.startsWith('/') ? req.url.slice(1) : req.url;
+  const apiKey = process.env.FOOTBALL_DATA_API_KEY || '';
+  const targetUrl = `https://api.football-data.org/${subpath}`;
+
+  try {
+    const headers: Record<string, string> = {
+      'Accept': 'application/json',
+    };
+    if (apiKey) {
+      headers['X-Auth-Token'] = apiKey;
+    }
+
+    const upstreamRes = await fetch(targetUrl, {
+      method: req.method,
+      headers,
+    });
+
+    const data = await upstreamRes.json();
+    return res.status(upstreamRes.status).json(data);
+  } catch (err: any) {
+    return res.status(502).json({
+      error: 'Football-Data.org API bilan aloqa xatoligi',
+      message: err?.message || 'Server xatosi',
+    });
+  }
+});
+
 // Toggle Favorite team
 app.post('/api/favorites/toggle', (req: Request, res: Response) => {
   const user = getSessionUser(req);
