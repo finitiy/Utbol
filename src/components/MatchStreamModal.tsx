@@ -3,9 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { Match } from '../types/index.ts';
-import { X, ExternalLink, ShieldCheck, Tv, MapPin, Calendar, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Match, StreamSource } from '../types/index.ts';
+import { VideoPlayer } from './VideoPlayer.tsx';
+import { 
+  X, 
+  ExternalLink, 
+  ShieldCheck, 
+  Tv, 
+  MapPin, 
+  Calendar, 
+  Radio, 
+  Layers, 
+  Share2, 
+  AlertCircle,
+  Clock,
+  Sparkles
+} from 'lucide-react';
 
 interface MatchStreamModalProps {
   match: Match | null;
@@ -16,136 +30,223 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
   if (!match) return null;
 
   const isLive = match.status === 'IN_PLAY';
-  const hasStream = Boolean(match.streamUrl);
   const broadcaster = match.broadcaster;
 
+  // Build sources list from match or defaults
+  const sources: StreamSource[] = (match.streamSources && match.streamSources.length > 0)
+    ? match.streamSources
+    : [
+        {
+          id: 'src-1',
+          name: broadcaster?.name || "1-Manba (Sport TV HD)",
+          url: match.streamUrl || 'https://mtrk.uz/uz/tv/sport',
+          type: match.streamType || 'HLS',
+          isDefault: true,
+          quality: '1080p HD',
+        },
+        {
+          id: 'src-2',
+          name: '2-Manba (UzReport TV / Futbol)',
+          url: 'https://uzreport.news',
+          type: 'EXTERNAL',
+          quality: '720p HD',
+        },
+        {
+          id: 'src-3',
+          name: '3-Manba (Setanta Sports UZ)',
+          url: 'https://setantasports.com',
+          type: 'EXTERNAL',
+          quality: '1080p',
+        },
+        {
+          id: 'src-4',
+          name: '4-Manba (YouTube Jonli Sharh & Efir)',
+          url: match.highlightsUrl || 'https://www.youtube.com/watch?v=live',
+          type: 'EMBED',
+          quality: '1080p 60fps',
+        }
+      ];
+
+  const [activeSource, setActiveSource] = useState<StreamSource>(sources[0]);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `${match.homeTeam.name} vs ${match.awayTeam.name} - Jonli Efir`,
+        text: `${match.homeTeam.name} vs ${match.awayTeam.name} o'yinini jonli tomosha qiling!`,
+        url: window.location.href,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
-      <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md">
+      <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 sticky top-0 bg-slate-900/95 backdrop-blur-sm z-10">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-white">{match.leagueName}</span>
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-800 sticky top-0 bg-slate-900/95 backdrop-blur-md z-30">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <span className="text-xs sm:text-sm font-bold text-white truncate">{match.leagueName}</span>
             {match.competitionRound && (
               <>
                 <span className="text-slate-600">·</span>
-                <span className="text-xs text-slate-400">{match.competitionRound}</span>
+                <span className="text-xs text-slate-400 truncate">{match.competitionRound}</span>
               </>
             )}
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleShare}
+              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              title="Ulashish"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        {/* Video Player / Broadcaster Container */}
-        <div className="p-6 space-y-6">
-          <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-slate-800 flex flex-col items-center justify-center text-center p-6">
-            {isLive ? (
-              <div className="space-y-4 max-w-lg">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full text-xs font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                  <span>JONLI EFIR ({match.minute}'-daqiqa)</span>
-                </div>
+        {/* Video Player Section */}
+        <div className="p-4 sm:p-6 space-y-5">
+          {/* Main Video Screen */}
+          <div className="w-full">
+            <VideoPlayer
+              streamUrl={activeSource.url}
+              streamType={activeSource.type}
+              title={`${match.homeTeam.shortName} vs ${match.awayTeam.shortName}`}
+              autoPlay={isLive}
+            />
+          </div>
 
-                <div className="text-2xl sm:text-3xl font-extrabold text-white">
-                  {match.homeTeam.name} {match.homeScore ?? 0} : {match.awayScore ?? 0} {match.awayTeam.name}
-                </div>
+          {/* Stream Source Selector Tabs */}
+          <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-semibold text-slate-300 flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-rose-400" />
+                <span>Translyatsiya manbasini tanlang:</span>
+              </span>
+              <span className="text-[11px] text-slate-500">
+                Agar bitta manba qotsa, boshqasiga o'ting
+              </span>
+            </div>
 
-                <p className="text-xs text-slate-400">
-                  Ushbu uchrashuv O'zbekiston hududida <strong>{broadcaster?.name || "Rasmiy telekanal"}</strong> orqali eksklyuziv translyatsiya qilinmoqda.
-                </p>
-
-                <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
-                  {broadcaster?.websiteUrl && (
-                    <a
-                      href={broadcaster.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-semibold text-slate-950 bg-emerald-400 rounded-lg hover:bg-emerald-300 transition-colors shadow-lg shadow-emerald-500/20"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      <span>{broadcaster.name} rasmiy saytida ko'rish</span>
-                    </a>
-                  )}
-
-                  {match.streamUrl && (
-                    <a
-                      href={match.streamUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 transition-colors"
-                    >
-                      <span>To'g'ridan-to'g'ri pleyer</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3 max-w-md">
-                <Tv className="w-12 h-12 text-slate-600 mx-auto" />
-                <h4 className="text-lg font-bold text-white">
-                  {match.status === 'FINISHED' ? 'Uchrashuv yakunlandi' : 'Uchrashuv hali boshlanmadi'}
-                </h4>
-                <p className="text-xs text-slate-400">
-                  {match.status === 'FINISHED'
-                    ? `Yakuniy hisob: ${match.homeScore ?? 0} : ${match.awayScore ?? 0}. Uchrashuv sharhlari va gollar video lavhalari tez orada taqdim etiladi.`
-                    : `Boshlanish vaqti Toshkent vaqti bilan ${match.kickoffTashkent}. Efir rasmiy teleradiokompaniyalar orqali uzatiladi.`}
-                </p>
-                {broadcaster?.websiteUrl && (
-                  <a
-                    href={broadcaster.websiteUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors mt-2"
+            <div className="flex flex-wrap gap-2">
+              {sources.map((src) => {
+                const isSelected = activeSource.id === src.id;
+                return (
+                  <button
+                    key={src.id}
+                    onClick={() => setActiveSource(src)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30 font-semibold'
+                        : 'bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-800'
+                    }`}
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    <span>{broadcaster.name} telekanaliga o'tish</span>
-                  </a>
-                )}
+                    <Radio className={`w-3 h-3 ${isSelected ? 'text-white animate-pulse' : 'text-slate-500'}`} />
+                    <span>{src.name}</span>
+                    {src.quality && (
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${isSelected ? 'bg-rose-700 text-rose-100' : 'bg-slate-800 text-slate-400'}`}>
+                        {src.quality}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Match Score Banner */}
+          <div className="p-4 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+            {/* Home Team */}
+            <div className="flex items-center gap-3 flex-1">
+              <img
+                src={match.homeTeam.crestUrl}
+                alt={match.homeTeam.name}
+                className="w-10 h-10 object-contain rounded-full bg-slate-800/50 p-1"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=80&auto=format&fit=crop&q=80';
+                }}
+              />
+              <div>
+                <h4 className="text-sm font-bold text-white">{match.homeTeam.name}</h4>
+                <span className="text-[11px] text-slate-400">Mezbon</span>
               </div>
+            </div>
+
+            {/* Score / Status */}
+            <div className="px-4 text-center shrink-0">
+              {isLive ? (
+                <div>
+                  <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-wider font-mono">
+                    {match.homeScore ?? 0} : {match.awayScore ?? 0}
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 mt-1 bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-full text-[11px] font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                    <span>{match.minute}'-daqiqa</span>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="text-sm font-bold text-amber-400">
+                    {match.status === 'FINISHED' ? 'Yakunlandi' : 'Boshlanmadi'}
+                  </div>
+                  <div className="text-xs text-slate-400 mt-0.5">{match.kickoffTashkent}</div>
+                </div>
+              )}
+            </div>
+
+            {/* Away Team */}
+            <div className="flex items-center justify-end gap-3 flex-1 text-right">
+              <div>
+                <h4 className="text-sm font-bold text-white">{match.awayTeam.name}</h4>
+                <span className="text-[11px] text-slate-400">Mehmon</span>
+              </div>
+              <img
+                src={match.awayTeam.crestUrl}
+                alt={match.awayTeam.name}
+                className="w-10 h-10 object-contain rounded-full bg-slate-800/50 p-1"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=80&auto=format&fit=crop&q=80';
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Official Channel Direct Links */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-950/40 rounded-xl border border-slate-800/60">
+            <div className="flex items-center gap-2 text-xs text-slate-300">
+              <Tv className="w-4 h-4 text-emerald-400" />
+              <span>Rasmiy telekanal: <strong>{broadcaster?.name || "Sport TV O'zbekiston"}</strong></span>
+            </div>
+            {broadcaster?.websiteUrl && (
+              <a
+                href={broadcaster.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>Telekanal rasmiy sayti</span>
+              </a>
             )}
           </div>
 
-          {/* Legal Compliance Banner (Requirement 7) */}
-          <div className="p-4 bg-slate-950/70 border border-slate-800/80 rounded-xl flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-            <div className="text-xs text-slate-400 space-y-1">
-              <span className="font-semibold text-slate-200">Litsenziyalangan translyatsiya kafolati:</span>
-              <p>
-                Futbol Live Uzbekistan faqat rasmiy litsenziyaga ega mahalliy va xalqaro media hamkorlar (O'zbekiston MTRK "Sport TV", "UzReport TV", "Setanta Sports") ochiq havolalarini taqdim etadi. Noqonuniy piratik strimlar yoki mualliflik huquqini buzuvchi manbalar joylashtirilmaydi.
-              </p>
-            </div>
-          </div>
-
-          {/* Match Details Matrix */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-            <div className="p-3 bg-slate-950/40 rounded-lg border border-slate-800/60">
-              <div className="flex items-center gap-2 text-slate-500 mb-1">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>Vaqt (Toshkent UTC+5)</span>
-              </div>
-              <div className="font-semibold text-slate-200">{match.kickoffTashkent}</div>
-            </div>
-
-            <div className="p-3 bg-slate-950/40 rounded-lg border border-slate-800/60">
-              <div className="flex items-center gap-2 text-slate-500 mb-1">
-                <MapPin className="w-3.5 h-3.5" />
-                <span>Stadion</span>
-              </div>
-              <div className="font-semibold text-slate-200 truncate">{match.venue || "Markaziy Arena"}</div>
-            </div>
-
-            <div className="p-3 bg-slate-950/40 rounded-lg border border-slate-800/60">
-              <div className="flex items-center gap-2 text-slate-500 mb-1">
-                <Tv className="w-3.5 h-3.5" />
-                <span>Telekanal</span>
-              </div>
-              <div className="font-semibold text-emerald-400 truncate">{broadcaster?.name || "Sport TV"}</div>
-            </div>
+          {/* Legal Compliance */}
+          <div className="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl flex items-start gap-2.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              <strong>Litsenziyalangan efir:</strong> Barcha video oqimlar va translatsiyalar O'zbekiston teleradiokompaniyalari hamda rasmiy media huquq egalarining ochiq manbalari orqali taqdim etiladi.
+            </p>
           </div>
         </div>
       </div>

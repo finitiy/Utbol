@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Home, Tv, Calendar, Trophy, User as UserIcon } from 'lucide-react';
+import { Home, Tv, Calendar, Trophy, User as UserIcon, Radio } from 'lucide-react';
 
 interface BottomTabBarProps {
   currentTab: string;
@@ -49,15 +49,15 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
           )}
         </button>
 
-        {/* Tab 3: Matches */}
+        {/* Tab 3: Live Channels */}
         <button
-          onClick={() => onSelectTab('matches')}
+          onClick={() => onSelectTab('channels')}
           className={`flex flex-col items-center justify-center min-h-[44px] min-w-[44px] ${
-            currentTab === 'matches' ? 'text-emerald-400 font-semibold' : 'text-slate-400'
+            currentTab === 'channels' ? 'text-rose-400 font-semibold' : 'text-slate-400'
           }`}
         >
-          <Calendar className="w-5 h-5" />
-          <span className="text-[10px] tracking-tight mt-1">O'yinlar</span>
+          <Radio className="w-5 h-5" />
+          <span className="text-[10px] tracking-tight mt-1">Kanallar</span>
         </button>
 
         {/* Tab 4: Standings */}

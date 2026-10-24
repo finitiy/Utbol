@@ -234,8 +234,13 @@ class DatabaseStore {
       homeScore: 2,
       awayScore: 1,
       broadcaster: b1,
-      streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-      streamType: 'HLS',
+      streamUrl: 'https://mtrk.uz/uz/tv/sport',
+      streamType: 'EXTERNAL',
+      streamSources: [
+        { id: 'm1-s1', name: "Sport TV (MTRK O'zbekiston)", url: 'https://mtrk.uz/uz/tv/sport', type: 'EXTERNAL', quality: '1080p HD' },
+        { id: 'm1-s2', name: "UzReport TV / Futbol", url: 'https://uzreport.news', type: 'EXTERNAL', quality: '720p HD' },
+        { id: 'm1-s3', name: "YouTube Jonli Sharh", url: 'https://www.youtube.com/watch?v=live', type: 'EMBED', quality: '1080p' }
+      ],
       isPublished: true,
       isFeatured: true,
       venue: "Markaziy Stadioni, Namangan (Tomoshabinlar: 22,000)",
@@ -260,6 +265,11 @@ class DatabaseStore {
       broadcaster: b2,
       streamUrl: 'https://uzreport.news',
       streamType: 'EXTERNAL',
+      streamSources: [
+        { id: 'm2-s1', name: "UzReport TV Jonli Efir", url: 'https://uzreport.news', type: 'EXTERNAL', quality: '1080p HD' },
+        { id: 'm2-s2', name: "Setanta Sports O'zbekiston", url: 'https://setantasports.com', type: 'EXTERNAL', quality: '1080p 50fps' },
+        { id: 'm2-s3', name: "UEFA Champions League HD", url: 'https://www.uefa.com', type: 'EXTERNAL', quality: 'HD' }
+      ],
       isPublished: true,
       isFeatured: true,
       venue: 'Santiago Bernabéu, Madrid',

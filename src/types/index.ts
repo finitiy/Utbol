@@ -36,6 +36,27 @@ export interface League {
   priority: number;
 }
 
+export interface StreamSource {
+  id: string;
+  name: string;
+  url: string;
+  type: StreamType;
+  isDefault?: boolean;
+  quality?: string;
+}
+
+export interface LiveChannel {
+  id: string;
+  name: string;
+  country: string;
+  logoUrl: string;
+  currentProgram: string;
+  streamUrl: string;
+  streamType: StreamType;
+  sources: StreamSource[];
+  isLive: boolean;
+}
+
 export interface Match {
   id: string;
   externalId?: string;
@@ -52,6 +73,7 @@ export interface Match {
   broadcaster?: Broadcaster;
   streamUrl?: string;
   streamType?: StreamType;
+  streamSources?: StreamSource[];
   isPublished: boolean;
   isFeatured?: boolean;
   venue?: string;

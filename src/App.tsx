@@ -16,6 +16,7 @@ import { AuthModal } from './components/AuthModal.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { AndroidSetupModal } from './components/AndroidSetupModal.tsx';
 import { BottomTabBar } from './components/BottomTabBar.tsx';
+import { LiveChannelsView } from './components/LiveChannelsView.tsx';
 import { 
   Search, 
   Flame, 
@@ -203,9 +204,11 @@ export default function App() {
 
       {/* 3. Main Body Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-        {/* VIEW 1: STANDINGS */}
+        {/* VIEW: STANDINGS */}
         {currentTab === 'standings' ? (
           <StandingsView leagues={leagues} />
+        ) : currentTab === 'channels' ? (
+          <LiveChannelsView />
         ) : (
           <>
             {/* Hero Spotlight (Rendered on Home or Live) */}

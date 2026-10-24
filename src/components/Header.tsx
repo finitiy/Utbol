@@ -75,6 +75,14 @@ export const Header: React.FC<HeaderProps> = ({
               Jonli efirlar
             </button>
             <button
+              onClick={() => onSelectTab('channels')}
+              className={`whitespace-nowrap transition-colors ${
+                currentTab === 'channels' ? 'text-rose-400 font-semibold' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              Telekanallar
+            </button>
+            <button
               onClick={() => onSelectTab('matches')}
               className={`whitespace-nowrap transition-colors ${
                 currentTab === 'matches' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
