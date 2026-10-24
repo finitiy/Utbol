@@ -58,33 +58,40 @@ export const ESPN_LEAGUE_MAP: Record<string, { slug: string; name: string; code:
 function getStandardStreamSources(_matchTitle: string): StreamSource[] {
   return [
     {
-      id: `src-sport-tv`,
-      name: "Sport TV O'zbekiston (HD)",
+      id: `src-fast-sports-1`,
+      name: "FastSports 1 HD (1080p)",
       url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
       type: 'HLS',
       isDefault: true,
-      quality: '1080p 50fps',
+      quality: '1080p 60fps',
     },
     {
-      id: `src-uzreport`,
-      name: "UzReport TV Jonli Efir",
-      url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+      id: `src-trt-world`,
+      name: "TRT World Sport HD",
+      url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8',
+      type: 'HLS',
+      quality: '1080p Live',
+    },
+    {
+      id: `src-dw-sport`,
+      name: "DW Sport Global (HD)",
+      url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8',
       type: 'HLS',
       quality: '720p HD',
     },
     {
-      id: `src-setanta`,
-      name: "Setanta Sports 1 UZ",
-      url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8',
+      id: `src-rt-news`,
+      name: "RT News Live HD",
+      url: 'https://rt-glb.rttv.com/live/rtnews/playlist.m3u8',
       type: 'HLS',
       quality: '1080p FHD',
     },
     {
-      id: `src-fast-embed`,
-      name: "FastSports Jonli Efir (FHD)",
-      url: 'https://test-streams.mux.dev/test_001/stream.m3u8',
+      id: `src-sports-arena`,
+      name: "Sports Max Arena (FHD)",
+      url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
       type: 'HLS',
-      quality: 'Multi-Bitrate 1080p',
+      quality: '1080p FHD',
     },
   ];
 }

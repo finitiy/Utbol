@@ -24,6 +24,14 @@ export interface TelegramInitDataValidated {
   isAdmin: boolean;
 }
 
+function escapeHtml(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 /**
  * Validates Telegram Mini App initData string using Telegram's official HMAC-SHA256 algorithm.
  */
@@ -49,7 +57,13 @@ export function validateTelegramInitData(initDataStr: string, botToken: string):
     if (botToken && botToken !== 'YOUR_TELEGRAM_BOT_TOKEN') {
       const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
       const calculatedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
-      isValid = crypto.timingSafeEqual(Buffer.from(calculatedHash, 'hex'), Buffer.from(hash, 'hex'));
+      const calcBuf = Buffer.from(calculatedHash, 'hex');
+      const hashBuf = Buffer.from(hash, 'hex');
+      if (calcBuf.length === hashBuf.length) {
+        isValid = crypto.timingSafeEqual(calcBuf, hashBuf);
+      } else {
+        isValid = false;
+      }
     } else {
       isValid = true;
     }
@@ -103,6 +117,10 @@ export class TelegramBotService {
       first_name: 'Live Futbol',
       username: 'FutbolJonliEfirBot',
     };
+
+    // Configure chat menu button and commands in background
+    this.setupBotMenuAndCommands();
+
     // Automatically start real-time polling to process incoming Telegram messages
     this.startLongPolling();
   }
@@ -124,7 +142,51 @@ export class TelegramBotService {
   }
 
   public setAppUrl(url: string) {
-    this.appUrl = url;
+    this.appUrl = url.replace('ais-pre-', 'ais-dev-');
+    this.setupBotMenuAndCommands();
+  }
+
+  /**
+   * Configures official Telegram Chat Menu Button & Commands
+   */
+  public async setupBotMenuAndCommands() {
+    if (!this.isConfigured()) return;
+    const cleanUrl = this.appUrl.startsWith('http') ? this.appUrl : `https://${this.appUrl}`;
+
+    try {
+      // 1. Set Chat Menu Button to directly open the Web App
+      await fetch(`https://api.telegram.org/bot${this.botToken}/setChatMenuButton`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          menu_button: {
+            type: 'web_app',
+            text: '⚽ Jonli Efir',
+            web_app: { url: cleanUrl },
+          },
+        }),
+      });
+
+      // 2. Set Bot Commands list in Telegram
+      await fetch(`https://api.telegram.org/bot${this.botToken}/setMyCommands`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          commands: [
+            { command: 'start', description: "Asosiy menyu va Mini App" },
+            { command: 'jonli', description: "Hozir jonli efirdagi o'yinlar" },
+            { command: 'bugun', description: "Bugungi barcha uchrashuvlar" },
+            { command: 'kanallar', description: "Jonli sport telekanallari" },
+            { command: 'natijalar', description: "So'nggi o'yin natijalari" },
+            { command: 'chempionatlar', description: "Turnir jadvallari va ligalar" },
+            { command: 'admin', description: "Boshqaruv paneli (admin)" },
+            { command: 'help', description: "Yo'riqnoma va yordam" },
+          ],
+        }),
+      });
+    } catch (err) {
+      console.warn('Telegram bot menu/commands setup warning:', err);
+    }
   }
 
   /**
@@ -143,7 +205,8 @@ export class TelegramBotService {
       this.botToken = cleanToken;
       this.botInfo = data.result;
 
-      // Start long-polling automatically to process real messages
+      // Configure menu and start long-polling
+      this.setupBotMenuAndCommands();
       this.startLongPolling();
 
       db.addAuditLog('admin', 'Telegram Bot', 'BOT_TOKEN_UPDATE', `@${data.result.username} boti muvaffaqiyatli ulandi va ishga tushirildi`);
@@ -173,7 +236,7 @@ export class TelegramBotService {
     const poll = async () => {
       while (this.isPollingActive) {
         try {
-          const url = `https://api.telegram.org/bot${this.botToken}/getUpdates?offset=${this.lastUpdateId + 1}&timeout=25`;
+          const url = `https://api.telegram.org/bot${this.botToken}/getUpdates?offset=${this.lastUpdateId + 1}&timeout=20`;
           const res = await fetch(url, { signal: this.pollingController?.signal });
           
           if (!res.ok) {
@@ -185,7 +248,11 @@ export class TelegramBotService {
           if (data.ok && Array.isArray(data.result)) {
             for (const update of data.result) {
               this.lastUpdateId = update.update_id;
-              await this.processIncomingUpdate(update);
+              try {
+                await this.processIncomingUpdate(update);
+              } catch (upErr) {
+                console.error('Error in processIncomingUpdate:', upErr);
+              }
             }
           }
         } catch (err: any) {
@@ -214,7 +281,7 @@ export class TelegramBotService {
       if (update.message) {
         const msg = update.message;
         const chatId = msg.chat?.id;
-        const text = (msg.text || '').trim();
+        const rawText = (msg.text || '').trim();
         const user = msg.from;
 
         if (!chatId) return;
@@ -230,7 +297,7 @@ export class TelegramBotService {
             }
           }
 
-          const isAdmin = tgIdStr === db.adminTelegramId;
+          const isAdmin = tgIdStr === db.adminTelegramId.toString();
 
           if (!existingUser) {
             const newId = `tg-${user.id}`;
@@ -252,51 +319,123 @@ export class TelegramBotService {
           }
         }
 
-        // Handle commands
-        if (text.startsWith('/start')) {
+        // Clean & normalize text command
+        const norm = rawText.toLowerCase().replace(/@\w+/g, '').trim();
+
+        // Handle commands flexibly (Uzbek, English, with or without slash)
+        if (norm.startsWith('/start') || norm === 'start') {
           const payload = this.handleStart(chatId, user);
           await this.sendTelegramMessage(chatId, payload.text, payload.reply_markup);
-        } else if (text.startsWith('/help')) {
-          await this.sendTelegramMessage(chatId, this.handleHelp());
-        } else if (text.startsWith('/bugun')) {
-          await this.sendTelegramMessage(chatId, this.getTodayMatchesMessage());
-        } else if (text.startsWith('/jonli')) {
+        } else if (
+          norm.startsWith('/jonli') ||
+          norm.startsWith('/live') ||
+          norm === 'jonli' ||
+          norm === 'live' ||
+          norm.includes('jonli efir') ||
+          norm.includes('jonli o‘yinlar') ||
+          norm.includes('jonli oyinlar')
+        ) {
           await this.sendTelegramMessage(chatId, this.getLiveMatchesMessage());
-        } else if (text.startsWith('/natijalar')) {
+        } else if (
+          norm.startsWith('/bugun') ||
+          norm.startsWith('/today') ||
+          norm.startsWith('/matches') ||
+          norm === 'bugun' ||
+          norm.includes('bugungi o‘yinlar') ||
+          norm.includes('bugungi oyinlar')
+        ) {
+          await this.sendTelegramMessage(chatId, this.getTodayMatchesMessage());
+        } else if (
+          norm.startsWith('/kanallar') ||
+          norm.startsWith('/tv') ||
+          norm.startsWith('/channels') ||
+          norm === 'kanallar' ||
+          norm === 'telekanallar' ||
+          norm.includes('telekanal')
+        ) {
+          await this.sendTelegramMessage(chatId, this.getChannelsMessage());
+        } else if (
+          norm.startsWith('/natijalar') ||
+          norm.startsWith('/results') ||
+          norm === 'natijalar' ||
+          norm.includes('natija')
+        ) {
           await this.sendTelegramMessage(chatId, this.getResultsMessage());
-        } else if (text.startsWith('/admin')) {
+        } else if (
+          norm.startsWith('/chempionat') ||
+          norm.startsWith('/leagues') ||
+          norm.startsWith('/jadval') ||
+          norm.startsWith('/table') ||
+          norm.includes('chempionat') ||
+          norm.includes('jadval')
+        ) {
+          await this.sendTelegramMessage(chatId, this.getLeaguesMessage());
+        } else if (norm.startsWith('/admin')) {
           await this.sendTelegramMessage(chatId, this.handleAdminCommand(user?.id?.toString() || ''));
+        } else if (
+          norm.startsWith('/help') ||
+          norm === 'help' ||
+          norm === 'yordam' ||
+          norm.includes('yordam')
+        ) {
+          await this.sendTelegramMessage(chatId, this.handleHelp());
+        } else {
+          // Graceful fallback response
+          const startPayload = this.handleStart(chatId, user);
+          await this.sendTelegramMessage(
+            chatId,
+            `⚽ <b>Futbol Live Uzbekistan</b>\n\n` +
+            `Xabaringiz qabul qilindi. Jonli efir va o'yinlarni ko'rish uchun quyidagi tugmalardan foydalaning yoki buyruq yuboring:\n\n` +
+            `• /jonli - Hozir jonli efirdagi bahslar\n` +
+            `• /bugun - Bugungi barcha uchrashuvlar\n` +
+            `• /kanallar - Jonli sport telekanallari\n` +
+            `• /natijalar - So'nggi natijalar\n` +
+            `• /help - Yordam va ma'lumot\n\n` +
+            `📲 To'liq efirni tomosha qilish uchun <b>"🚀 Web Appda ochish"</b> tugmasini bosing!`,
+            startPayload.reply_markup
+          );
         }
       } else if (update.callback_query) {
         const query = update.callback_query;
         const chatId = query.message?.chat?.id;
         const data = query.data;
 
+        // Immediate callback acknowledgement to prevent Telegram loading spinner
+        try {
+          await fetch(`https://api.telegram.org/bot${this.botToken}/answerCallbackQuery`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callback_query_id: query.id }),
+          });
+        } catch {
+          // ignore
+        }
+
         if (chatId) {
           if (data === 'live_matches') {
             await this.sendTelegramMessage(chatId, this.getLiveMatchesMessage());
           } else if (data === 'today_matches') {
             await this.sendTelegramMessage(chatId, this.getTodayMatchesMessage());
+          } else if (data === 'channels_list') {
+            await this.sendTelegramMessage(chatId, this.getChannelsMessage());
           } else if (data === 'recent_results') {
             await this.sendTelegramMessage(chatId, this.getResultsMessage());
           } else if (data === 'leagues') {
             await this.sendTelegramMessage(chatId, this.getLeaguesMessage());
           } else if (data === 'my_profile') {
             const tgId = query.from?.id?.toString();
-            await this.sendTelegramMessage(chatId, `👤 <b>Sizning profilingiz:</b>\n\nTelegram ID: <code>${tgId}</code>\nIsm: ${query.from?.first_name}\nRol: ${tgId === db.adminTelegramId ? '🛡️ Administrator' : '⚽ Futbol Muxlisi'}`);
+            const isAdmin = tgId === db.adminTelegramId.toString();
+            await this.sendTelegramMessage(
+              chatId,
+              `👤 <b>Sizning profilingiz:</b>\n\n` +
+              `Telegram ID: <code>${tgId}</code>\n` +
+              `Ism: ${escapeHtml(query.from?.first_name || 'Muxlis')}\n` +
+              `Foydalanuvchi nomi: @${escapeHtml(query.from?.username || 'ko\'rsatilmagan')}\n` +
+              `Rol: ${isAdmin ? '🛡️ Bosh Administrator' : '⚽ Futbol Muxlisi'}\n` +
+              `Holat: ✅ Faol`
+            );
           } else if (data === 'help') {
             await this.sendTelegramMessage(chatId, this.handleHelp());
-          }
-
-          // Acknowledge callback
-          try {
-            await fetch(`https://api.telegram.org/bot${this.botToken}/answerCallbackQuery`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ callback_query_id: query.id }),
-            });
-          } catch {
-            // ignore
           }
         }
       }
@@ -306,12 +445,12 @@ export class TelegramBotService {
   }
 
   /**
-   * Helper to send real Telegram message
+   * Helper to send Telegram message safely with HTML parse mode and automatic plain-text fallback
    */
-  public async sendTelegramMessage(chatId: string | number, text: string, replyMarkup?: any) {
+  public async sendTelegramMessage(chatId: string | number, text: string, replyMarkup?: any): Promise<boolean> {
     if (!this.isConfigured()) return false;
     try {
-      const res = await fetch(`https://api.telegram.org/bot${this.botToken}/sendMessage`, {
+      let res = await fetch(`https://api.telegram.org/bot${this.botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -321,6 +460,21 @@ export class TelegramBotService {
           reply_markup: replyMarkup,
         }),
       });
+
+      if (!res.ok) {
+        // Fallback without parse_mode if entity parsing failed
+        const strippedText = text.replace(/<[^>]*>/g, '');
+        res = await fetch(`https://api.telegram.org/bot${this.botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: strippedText,
+            reply_markup: replyMarkup,
+          }),
+        });
+      }
+
       return res.ok;
     } catch (err) {
       console.error('Failed to send Telegram message:', err);
@@ -328,35 +482,38 @@ export class TelegramBotService {
     }
   }
 
-  // Generates Telegram Bot start reply with Mini App button and Uzbek keyboards
+  // Generates Telegram Bot start reply with pure in-app Web App buttons (no browser open link)
   public handleStart(chatId: string | number, user?: TelegramUser): { text: string; reply_markup: any } {
-    const name = user?.first_name || 'Hurmatli muxlis';
+    const name = escapeHtml(user?.first_name || 'Hurmatli muxlis');
     const text = `⚽ <b>Futbol Live Uzbekistan</b> botiga xush kelibsiz, ${name}!\n\n` +
       `Bu yerda siz:\n` +
-      `• O'zbekiston Superligasi va Yevropa chempionatlari jonli efirlari\n` +
-      `• Bugungi o'yinlar jadvali va to'g'ridan-to'g'ri hisoblar\n` +
-      `• Rasmiy telekanallar (Sport TV, UzReport, Setanta Sports) havolalari\n` +
-      `• Sevimli jamoalaringiz gollari va natijalari haqida tezkor xabarlarni kuzatishingiz mumkin.\n\n` +
-      `📱 Quyidagi <b>"🚀 Web Appni ochish"</b> tugmasi orqali to'g'ridan-to'g'ri Telegram ichida o'yinlarni tomosha qiling!`;
+      `• O'zbekiston Superligasi va jahon chempionatlari jonli translatsiyalari\n` +
+      `• Bugungi o'yinlar jadvali va real vaqtdagi jonli hisoblar\n` +
+      `• TRT World, DW, RT News va FastSports kabi jonli sport telekanallari\n` +
+      `• Sevimli jamoalaringiz natijalari haqida tezkor xabarlarni kuzatishingiz mumkin.\n\n` +
+      `📱 Quyidagi <b>"🚀 Web Appda ochish"</b> tugmasi orqali to'g'ridan-to'g'ri Telegram ichida tomosha qiling!`;
 
     const webAppUrl = this.appUrl.startsWith('http') ? this.appUrl : `https://${this.appUrl}`;
 
+    // Pure in-app Web App buttons — no "Brauzerda ochish" external button
     const reply_markup = {
       inline_keyboard: [
         [
-          { text: '🚀 Web App (Mini App)', web_app: { url: webAppUrl } },
-          { text: '🌐 Brauzerda ochish', url: webAppUrl },
+          { text: '🚀 Web Appda ochish (Jonli efir)', web_app: { url: webAppUrl } },
         ],
         [
           { text: '⚡ Jonli o‘yinlar', callback_data: 'live_matches' },
           { text: '📅 Bugungi o‘yinlar', callback_data: 'today_matches' },
         ],
         [
-          { text: '🏆 Chempionatlar', callback_data: 'leagues' },
+          { text: '📺 Telekanallar', callback_data: 'channels_list' },
           { text: '📊 Natijalar', callback_data: 'recent_results' },
         ],
         [
-          { text: '👤 Mening profilim', callback_data: 'my_profile' },
+          { text: '🏆 Chempionatlar', callback_data: 'leagues' },
+          { text: '👤 Profilim', callback_data: 'my_profile' },
+        ],
+        [
           { text: '🆘 Yordam', callback_data: 'help' },
         ],
       ],
@@ -369,12 +526,32 @@ export class TelegramBotService {
     return `📖 <b>Futbol Live Uzbekistan Bot Yo'riqnomasi</b>\n\n` +
       `<b>Buyruqlar ro'yxati:</b>\n` +
       `/start - Botni qayta ishga tushirish va asosiy menyu\n` +
-      `/bugun - Bugungi barcha futbol uchrashuvlari jadvali\n` +
       `/jonli - Hozir to'g'ridan-to'g'ri efirda ketayotgan bahslar\n` +
+      `/bugun - Bugungi barcha futbol uchrashuvlari jadvali\n` +
+      `/kanallar - Jonli sport telekanallari ro'yxati\n` +
       `/natijalar - So'nggi yakunlangan o'yinlar hisoblari\n` +
+      `/chempionatlar - Ligalar va turnir jadvallari\n` +
       `/admin - Boshqaruv paneli (faqat administratorlar uchun)\n\n` +
       `💡 <i>Eslatma: Barcha o'yinlarning boshlanish vaqtlari Toshkent vaqti (UTC+5) bo'yicha ko'rsatiladi.</i>\n\n` +
       `Murojaat uchun: @FutbolLiveUzSupport`;
+  }
+
+  public getChannelsMessage(): string {
+    return `📺 <b>JONLI SPORT TELEKANALLARI</b>\n\n` +
+      `Barcha telekanallar to'g'ridan-to'g'ri ilova ichida uzluksiz ishlamoqda:\n\n` +
+      `1️⃣ <b>TRT World HD (Sport & News)</b>\n` +
+      `   🌍 Turkiya & Xalqaro | 1080p FHD jonli efir\n\n` +
+      `2️⃣ <b>DW News & Sports Global (HD)</b>\n` +
+      `   🇩🇪 Germaniya & Global | 24/7 jonli efir\n\n` +
+      `3️⃣ <b>RT News Live HD (Sport & News)</b>\n` +
+      `   🌐 Xalqaro & Rossiya | 1080p jonli efir\n\n` +
+      `4️⃣ <b>RT Documentary & Sport HD</b>\n` +
+      `   🎥 Xalqaro hujjatli va sport efirlari\n\n` +
+      `5️⃣ <b>FastSports 1 HD (Action Sports)</b>\n` +
+      `   ⚡ Tezkor sport va futbol xabarlari\n\n` +
+      `6️⃣ <b>FastSports 2 (Live Football Arena)</b>\n` +
+      `   ⚽ Futbol uchrashuvlari va sharhlar\n\n` +
+      `📲 Kanallarni tomosha qilish uchun <b>"🚀 Web Appda ochish"</b> tugmasini bosing!`;
   }
 
   public getLiveMatchesMessage(): string {
@@ -388,14 +565,14 @@ export class TelegramBotService {
 
     let msg = `⚡ <b>JONLI EFIRLARDAGI O'YINLAR (Jonli hisoblar)</b>\n\n`;
     liveMatches.forEach((m) => {
-      const bcName = m.broadcaster?.name || "Rasmiy telekanal";
-      msg += `🏆 <b>${m.leagueName}</b> (${m.minute}'-daqiqa)\n` +
-             `⚔️ <b>${m.homeTeam.name}</b>  ${m.homeScore ?? 0} : ${m.awayScore ?? 0}  <b>${m.awayTeam.name}</b>\n` +
+      const bcName = escapeHtml(m.broadcaster?.name || "Rasmiy telekanal");
+      msg += `🏆 <b>${escapeHtml(m.leagueName)}</b> (${m.minute}'-daqiqa)\n` +
+             `⚔️ <b>${escapeHtml(m.homeTeam.name)}</b>  ${m.homeScore ?? 0} : ${m.awayScore ?? 0}  <b>${escapeHtml(m.awayTeam.name)}</b>\n` +
              `📺 Efir: ${bcName}\n` +
-             `🏟 ${m.venue || 'Stadion'}\n\n`;
+             `🏟 ${escapeHtml(m.venue || 'Stadion')}\n\n`;
     });
 
-    msg += `📲 Jonli efir videosini ko'rish uchun <b>"🚀 Web Appni ochish"</b> tugmasini bosing!`;
+    msg += `📲 Jonli efir videosini ko'rish uchun <b>"🚀 Web Appda ochish"</b> tugmasini bosing!`;
     return msg;
   }
 
@@ -412,9 +589,9 @@ export class TelegramBotService {
         ? `[ ${m.homeScore ?? 0} : ${m.awayScore ?? 0} ]` 
         : 'vs';
 
-      msg += `• <b>${m.homeTeam.name}</b> ${scoreText} <b>${m.awayTeam.name}</b>\n` +
-             `  🏆 ${m.leagueName} | ${statusIcon}\n` +
-             `  📺 ${m.broadcaster?.name || "Rasmiy efir"}\n\n`;
+      msg += `• <b>${escapeHtml(m.homeTeam.name)}</b> ${scoreText} <b>${escapeHtml(m.awayTeam.name)}</b>\n` +
+             `  🏆 ${escapeHtml(m.leagueName)} | ${statusIcon}\n` +
+             `  📺 ${escapeHtml(m.broadcaster?.name || "Rasmiy efir")}\n\n`;
     });
 
     return msg;
@@ -428,8 +605,8 @@ export class TelegramBotService {
 
     let msg = `📊 <b>YAKUNLANGAN UCHRASHUVLAR NATIJALARI</b>\n\n`;
     finished.forEach((m) => {
-      msg += `🏆 <b>${m.leagueName}</b>\n` +
-             `• <b>${m.homeTeam.name}</b>  ${m.homeScore ?? 0} : ${m.awayScore ?? 0}  <b>${m.awayTeam.name}</b>\n\n`;
+      msg += `🏆 <b>${escapeHtml(m.leagueName)}</b>\n` +
+             `• <b>${escapeHtml(m.homeTeam.name)}</b>  ${m.homeScore ?? 0} : ${m.awayScore ?? 0}  <b>${escapeHtml(m.awayTeam.name)}</b>\n\n`;
     });
     return msg;
   }
@@ -437,9 +614,9 @@ export class TelegramBotService {
   public getLeaguesMessage(): string {
     let msg = `🏆 <b>FUTBOL LIVE UZBEKISTAN — CHEMPIONATLAR</b>\n\n`;
     Array.from(db.leagues.values()).forEach((l) => {
-      msg += `• <b>${l.name}</b> (${l.country})\n`;
+      msg += `• <b>${escapeHtml(l.name)}</b> (${escapeHtml(l.country)})\n`;
     });
-    msg += `\nTurnir jadvallari va ochkolarni ko'rish uchun "🚀 Web Appni ochish" tugmasini bosing.`;
+    msg += `\nTurnir jadvallari va ochkolarni ko'rish uchun "🚀 Web Appda ochish" tugmasini bosing.`;
     return msg;
   }
 

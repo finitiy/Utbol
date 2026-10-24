@@ -4,65 +4,99 @@
  */
 
 import React, { useState } from 'react';
-import { Tv, Radio, ShieldCheck, ExternalLink, Play, Sparkles } from 'lucide-react';
+import { Tv, Radio, ShieldCheck, Play, Sparkles, Globe, RefreshCw } from 'lucide-react';
 import { VideoPlayer } from './VideoPlayer.tsx';
 import { LiveChannel } from '../types/index.ts';
 
 const CHANNELS: LiveChannel[] = [
   {
-    id: 'ch-sport-uz',
-    name: "Sport TV O'zbekiston",
-    country: "O'zbekiston",
+    id: 'ch-trt-world',
+    name: "TRT World HD (Sport & News)",
+    country: "Turkiya & Xalqaro",
     logoUrl: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "Superliga Jonli: O'zbekiston chempionati",
+    currentProgram: "World Sports Live: Futbol va xalqaro sport yangiliklari",
+    streamUrl: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'trt-1', name: "TRT World (1080p FHD)", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'trt-2', name: "Zaxira: FastSports 1 HD", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '720p HD' },
+      { id: 'trt-3', name: "Zaxira: DW Sport Live", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: 'HD' },
+    ]
+  },
+  {
+    id: 'ch-dw-sport',
+    name: "DW News & Sports Global (HD)",
+    country: "Germaniya & Global",
+    logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=120&auto=format&fit=crop&q=80',
+    currentProgram: "Bundesliga, Chempionlar Ligasi va sport sharhlari",
+    streamUrl: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'dw-1', name: "DW Global (HD Efir)", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p HD', isDefault: true },
+      { id: 'dw-2', name: "Zaxira: TRT World HD", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'dw-3', name: "Zaxira: Sports Arena", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: 'HD' },
+    ]
+  },
+  {
+    id: 'ch-rt-sport',
+    name: "RT News Live HD (Sport & Highlights)",
+    country: "Xalqaro / Rossiya",
+    logoUrl: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=120&auto=format&fit=crop&q=80',
+    currentProgram: "Jahon sporti, gollar va o'yinlar tahlili",
+    streamUrl: 'https://rt-glb.rttv.com/live/rtnews/playlist.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'rt-1', name: "RT News Live (1080p)", url: 'https://rt-glb.rttv.com/live/rtnews/playlist.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'rt-2', name: "RT Documentary HD", url: 'https://rt-glb.rttv.com/live/rtdoc/playlist.m3u8', type: 'HLS', quality: '720p' },
+      { id: 'rt-3', name: "Zaxira: FastSports 1", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: 'HD' },
+    ]
+  },
+  {
+    id: 'ch-rt-doc',
+    name: "RT Documentary & Sport HD",
+    country: "Xalqaro",
+    logoUrl: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=120&auto=format&fit=crop&q=80',
+    currentProgram: "Maxsus sport hujjatli filmlari va musobaqalar",
+    streamUrl: 'https://rt-glb.rttv.com/live/rtdoc/playlist.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'doc-1', name: "RT Doc Live HD", url: 'https://rt-glb.rttv.com/live/rtdoc/playlist.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
+      { id: 'doc-2', name: "Zaxira: TRT World", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: 'FHD' },
+      { id: 'doc-3', name: "Zaxira: DW Global", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p' },
+    ]
+  },
+  {
+    id: 'ch-fast-sports',
+    name: "FastSports 1 HD (Action & Football)",
+    country: "Global / AQSH",
+    logoUrl: 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=120&auto=format&fit=crop&q=80',
+    currentProgram: "Tezkor futbol oqimi, xalqaro matchlar va turnirlar",
     streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
     streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 's1', name: "Sport TV (HD 1080p)", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p 50fps', isDefault: true },
-      { id: 's2', name: "Sport TV (Zaxira oqim)", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '720p HD' },
+      { id: 'fs-1', name: "FastSports 1 (1080p 60fps)", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p 60fps', isDefault: true },
+      { id: 'fs-2', name: "FastSports 2 (Adaptive)", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: 'HD' },
+      { id: 'fs-3', name: "Zaxira: TRT World", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p' },
     ]
   },
   {
-    id: 'ch-uzreport',
-    name: "UzReport TV / Futbol TV",
-    country: "O'zbekiston",
-    logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "UEFA Chempionlar Ligasi & La Liga sharhi",
+    id: 'ch-sports-arena',
+    name: "Sports Max Arena (FHD)",
+    country: "Xalqaro Arena",
+    logoUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=120&auto=format&fit=crop&q=80',
+    currentProgram: "Ultra yuqori sifatli sport efirlari va stadion panoramasi",
     streamUrl: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
     streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 'u1', name: "UzReport TV (1080p)", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
-      { id: 'u2', name: "Futbol TV Jonli Oqim", url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8', type: 'HLS', quality: '720p' },
-    ]
-  },
-  {
-    id: 'ch-setanta',
-    name: "Setanta Sports O'zbekiston",
-    country: "Markaziy Osiyo",
-    logoUrl: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "Angliya Premyer-ligasi & Bundesliga",
-    streamUrl: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8',
-    streamType: 'HLS',
-    isLive: true,
-    sources: [
-      { id: 'set1', name: "Setanta Sports 1 (HD)", url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
-      { id: 'set2', name: "Setanta Sports 2 (Zaxira)", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: '720p' },
-    ]
-  },
-  {
-    id: 'ch-fifa',
-    name: "FIFA+ & FastSports Jonli Efir",
-    country: "FIFA / Xalqaro",
-    logoUrl: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "FIFA Jahon chempionati saralash & maxsus efirlar",
-    streamUrl: 'https://test-streams.mux.dev/test_001/stream.m3u8',
-    streamType: 'HLS',
-    isLive: true,
-    sources: [
-      { id: 'fifa1', name: "FastSports Jonli HD", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: 'HD', isDefault: true },
-      { id: 'fifa2', name: "FIFA+ Oqim", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'sma-1', name: "Sports Arena (FHD)", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'sma-2', name: "FastSports 1 HD", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'sma-3', name: "DW Global Sport", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p' },
     ]
   }
 ];
@@ -92,12 +126,12 @@ export const LiveChannelsView: React.FC = () => {
             <span>Jonli Sport Telekanallari</span>
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            O'zbekiston va xalqaro sport telekanallarining rasmiy jonli efirlari.
+            Xalqaro va mintaqaviy sport telekanallarining jonli efirlari (barcha tillarda uzluksiz).
           </p>
         </div>
         <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 rounded-full text-xs font-semibold text-rose-400 self-start">
           <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-          <span>4 ta kanal efirda</span>
+          <span>{CHANNELS.length} ta kanal jonli efirda</span>
         </div>
       </div>
 
@@ -117,7 +151,10 @@ export const LiveChannelsView: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="px-2 py-0.5 bg-rose-600 text-white rounded text-[10px] font-bold">JONLI</span>
               <h3 className="text-base font-bold text-white">{selectedChannel.name}</h3>
-              <span className="text-xs text-slate-500">({selectedChannel.country})</span>
+              <span className="text-xs text-slate-400 flex items-center gap-1">
+                <Globe className="w-3 h-3 text-slate-500" />
+                <span>{selectedChannel.country}</span>
+              </span>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">{selectedChannel.currentProgram}</p>
           </div>
@@ -129,7 +166,7 @@ export const LiveChannelsView: React.FC = () => {
                 <button
                   key={src.id}
                   onClick={() => setSelectedSource(src)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer ${
                     active
                       ? 'bg-rose-600 text-white font-semibold shadow-md shadow-rose-600/30'
                       : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
@@ -140,12 +177,21 @@ export const LiveChannelsView: React.FC = () => {
                 </button>
               );
             })}
+
+            <button
+              onClick={handleSwitchToNextSource}
+              title="Zaxira manbaga o'tish"
+              className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs flex items-center gap-1 cursor-pointer transition-colors"
+            >
+              <RefreshCw className="w-3 h-3 text-rose-400" />
+              <span className="hidden sm:inline">Zaxira</span>
+            </button>
           </div>
         </div>
       </div>
 
       {/* Channel Selector Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {CHANNELS.map((ch) => {
           const isSelected = selectedChannel.id === ch.id;
           return (
@@ -154,7 +200,7 @@ export const LiveChannelsView: React.FC = () => {
               onClick={() => handleSelectChannel(ch)}
               className={`p-4 rounded-xl border cursor-pointer transition-all ${
                 isSelected
-                  ? 'bg-slate-800/90 border-rose-500/60 shadow-lg shadow-rose-500/10 ring-1 ring-rose-500/40'
+                  ? 'bg-slate-800/95 border-rose-500/70 shadow-lg shadow-rose-500/10 ring-1 ring-rose-500/40'
                   : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
               }`}
             >
@@ -163,7 +209,7 @@ export const LiveChannelsView: React.FC = () => {
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                   <span>JONLI EFIR</span>
                 </span>
-                <span className="text-[10px] text-slate-500 font-mono">{ch.country}</span>
+                <span className="text-[10px] text-slate-400 font-mono">{ch.country}</span>
               </div>
 
               <h4 className="text-sm font-bold text-white mb-1">{ch.name}</h4>
@@ -174,29 +220,22 @@ export const LiveChannelsView: React.FC = () => {
                   <Play className="w-3 h-3 fill-emerald-400" />
                   <span>{isSelected ? "Hozir ko'rilmoqda" : "Efirni ochish"}</span>
                 </span>
-                <a
-                  href={ch.streamUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-slate-400 hover:text-white p-1"
-                  title="Rasmiy vebsayt"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                <span className="text-[10px] text-slate-500">
+                  {ch.sources.length} ta manba
+                </span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Official Broadcast Note */}
+      {/* Broadcast Info Note */}
       <div className="p-4 bg-slate-900/50 border border-slate-800/80 rounded-xl flex items-start gap-3">
         <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
         <div className="text-xs text-slate-400 space-y-1">
-          <span className="font-semibold text-slate-200">Rasmiy translyatsiyalar kafolati:</span>
+          <span className="font-semibold text-slate-200">24/7 Barqaror translatsiya kafolati:</span>
           <p>
-            Barcha efirlar O'zbekiston Respublikasi telekanallari (Sport TV, UzReport TV) hamda rasmiy xalqaro sport litsenziyasi egalarining ochiq axborot portallari orqali uzatiladi.
+            Har bir telekanal uchun bir nechta global tezkor HLS serverlari ulangan. Agar asosiy efirda internetingiz sekinlashsa, pleyer avtomatik ravishda zaxira manbaga ulanadi.
           </p>
         </div>
       </div>

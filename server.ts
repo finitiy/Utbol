@@ -573,30 +573,9 @@ app.post('/api/favorites/toggle', (req: Request, res: Response) => {
 app.post('/api/telegram/webhook', async (req: Request, res: Response) => {
   try {
     const update = req.body;
-    if (!update) return res.sendStatus(200);
-
-    const message = update.message;
-    const callbackQuery = update.callback_query;
-
-    if (message && message.text) {
-      const chatId = message.chat.id;
-      const text = message.text.trim();
-      const user = message.from;
-
-      if (text.startsWith('/start')) {
-        const reply = telegramBot.handleStart(chatId, user);
-        // If real bot token is present, could send reply via Telegram API
-      } else if (text.startsWith('/help')) {
-        const replyText = telegramBot.handleHelp();
-      } else if (text.startsWith('/jonli')) {
-        const replyText = telegramBot.getLiveMatchesMessage();
-      } else if (text.startsWith('/bugun')) {
-        const replyText = telegramBot.getTodayMatchesMessage();
-      } else if (text.startsWith('/admin')) {
-        const replyText = telegramBot.handleAdminCommand(user.id.toString());
-      }
+    if (update) {
+      await telegramBot.processIncomingUpdate(update);
     }
-
     return res.json({ ok: true });
   } catch (err) {
     console.error('Webhook error:', err);
@@ -608,17 +587,24 @@ app.post('/api/telegram/webhook', async (req: Request, res: Response) => {
 app.post('/api/telegram/simulate', (req: Request, res: Response) => {
   const { command, telegramId = '7853449314', firstName = 'Azizbek' } = req.body;
   const user = { id: parseInt(telegramId, 10) || 7853449314, first_name: firstName };
+  const cmd = (command || '').toLowerCase().trim();
 
-  if (command === '/start') {
+  if (cmd === '/start' || cmd === 'start') {
     const resPayload = telegramBot.handleStart(user.id, user);
     return res.json({ type: 'start', ...resPayload });
-  } else if (command === '/help') {
+  } else if (cmd === '/help' || cmd === 'help') {
     return res.json({ type: 'text', text: telegramBot.handleHelp() });
-  } else if (command === '/jonli') {
+  } else if (cmd === '/jonli' || cmd === '/live' || cmd.includes('jonli')) {
     return res.json({ type: 'text', text: telegramBot.getLiveMatchesMessage() });
-  } else if (command === '/bugun') {
+  } else if (cmd === '/bugun' || cmd === '/today' || cmd.includes('bugun')) {
     return res.json({ type: 'text', text: telegramBot.getTodayMatchesMessage() });
-  } else if (command === '/admin') {
+  } else if (cmd === '/kanallar' || cmd === '/tv' || cmd.includes('kanal')) {
+    return res.json({ type: 'text', text: telegramBot.getChannelsMessage() });
+  } else if (cmd === '/natijalar' || cmd === '/results' || cmd.includes('natija')) {
+    return res.json({ type: 'text', text: telegramBot.getResultsMessage() });
+  } else if (cmd === '/chempionatlar' || cmd === '/leagues' || cmd.includes('chempionat')) {
+    return res.json({ type: 'text', text: telegramBot.getLeaguesMessage() });
+  } else if (cmd === '/admin') {
     return res.json({ type: 'text', text: telegramBot.handleAdminCommand(user.id.toString()) });
   }
 
