@@ -184,12 +184,30 @@ class DatabaseStore {
       code: 'PD',
       name: 'Ispaniya La Ligasi',
       country: 'Ispaniya',
-      logoUrl: 'https://crests.football-data.org/PD.png',
+      logoUrl: 'https://a.espncdn.com/i/leaguelogos/soccer/500/15.png',
       season: '2025/2026',
       priority: 4,
     };
+    const lSerieA: League = {
+      id: 'league-seriea',
+      code: 'SA',
+      name: 'Italiya Serie A',
+      country: 'Italiya',
+      logoUrl: 'https://a.espncdn.com/i/leaguelogos/soccer/500/12.png',
+      season: '2025/2026',
+      priority: 5,
+    };
+    const lBundesliga: League = {
+      id: 'league-bundesliga',
+      code: 'BL1',
+      name: 'Germaniya Bundesligasi',
+      country: 'Germaniya',
+      logoUrl: 'https://a.espncdn.com/i/leaguelogos/soccer/500/10.png',
+      season: '2025/2026',
+      priority: 6,
+    };
 
-    [lSuperliga, lUCL, lEPL, lLaLiga].forEach((l) => this.leagues.set(l.id, l));
+    [lSuperliga, lUCL, lEPL, lLaLiga, lSerieA, lBundesliga].forEach((l) => this.leagues.set(l.id, l));
 
     // 4. Teams
     const teamsList: Team[] = [

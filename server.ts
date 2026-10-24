@@ -399,7 +399,17 @@ app.post('/api/auth/telegram/quick-login', (req: Request, res: Response) => {
 
 // List all matches with filters
 app.get('/api/matches', async (req: Request, res: Response) => {
-  const { status, leagueId, search, date } = req.query;
+  const { status, leagueId, search, refresh } = req.query;
+
+  // Auto-sync if requested or if database doesn't have real external matches yet
+  const hasExternalMatches = Array.from(db.matches.values()).some((m) => m.id.startsWith('espn-') || m.id.startsWith('fdo-'));
+  if (refresh === 'true' || !hasExternalMatches) {
+    try {
+      await footballProvider.syncWithDatabase();
+    } catch (syncErr) {
+      console.warn('Sync on /api/matches warning:', syncErr);
+    }
+  }
 
   let matches = Array.from(db.matches.values());
 
@@ -437,6 +447,33 @@ app.get('/api/matches', async (req: Request, res: Response) => {
   });
 
   return res.json({ matches, total: matches.length });
+});
+
+// Dedicated Real-time Live Matches endpoint
+app.get('/api/matches/live', async (_req: Request, res: Response) => {
+  const liveMatches = Array.from(db.matches.values()).filter((m) => m.status === 'IN_PLAY' && m.isPublished);
+  return res.json({
+    liveMatches,
+    count: liveMatches.length,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Instant Real-Time Football Data Sync Endpoint (Frontend or Admin)
+let lastManualSyncTime = 0;
+app.post(['/api/sync/live', '/api/matches/sync'], async (_req: Request, res: Response) => {
+  const now = Date.now();
+  if (now - lastManualSyncTime < 10000) {
+    return res.json({
+      message: 'Ma\'lumotlar yaqinda yangilandi (10 soniya oraliq)',
+      syncedCount: db.matches.size,
+      liveCount: Array.from(db.matches.values()).filter((m) => m.status === 'IN_PLAY').length,
+    });
+  }
+
+  lastManualSyncTime = now;
+  const result = await footballProvider.syncWithDatabase();
+  return res.json(result);
 });
 
 // Single match details
@@ -829,6 +866,22 @@ async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`[Futbol Live UZ] Server running on http://0.0.0.0:${PORT}`);
+
+    // Initial Real-time Football Data Fetch
+    footballProvider.syncWithDatabase()
+      .then((res) => {
+        console.log(`[Realtime Sports API] Dastlabki sinxronlash: ${res.status}`);
+      })
+      .catch((err) => {
+        console.warn(`[Realtime Sports API] Dastlabki sinxronlashda ogohlantirish:`, err);
+      });
+
+    // Periodic Background Sync every 60 seconds for live minutes and scores
+    setInterval(() => {
+      footballProvider.syncWithDatabase().catch((err) => {
+        console.warn('[Realtime Sports API] Foniy yangilanishda xatolik:', err);
+      });
+    }, 60 * 1000);
   });
 }
 

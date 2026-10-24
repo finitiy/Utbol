@@ -207,15 +207,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Sync Button */}
         <button
           onClick={async () => {
-            await api.syncFootballData();
-            onRefreshMatches();
-            loadAllAdminData();
-            setStatusFeedback('Football-Data.org API orqali ma\'lumotlar sinxronlandi.');
+            try {
+              const res = await api.syncFootballData();
+              onRefreshMatches();
+              loadAllAdminData();
+              setStatusFeedback(res.status || 'Jonli efir va o\'yinlar real-time sinxronlandi.');
+            } catch (err: any) {
+              setStatusFeedback(`Sinxronlashda xatolik: ${err.message}`);
+            }
           }}
           className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-700 hover:border-slate-600 rounded-lg text-xs font-medium text-slate-200 transition-colors"
         >
           <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
-          <span>API Sinxronizatsiya</span>
+          <span>Real-time Sinxronizatsiya</span>
         </button>
       </div>
 

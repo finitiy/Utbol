@@ -40,6 +40,7 @@ export default function App() {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   // Active Modals
   const [selectedMatchForStream, setSelectedMatchForStream] = useState<Match | null>(null);
@@ -53,6 +54,13 @@ export default function App() {
 
   useEffect(() => {
     initApp();
+
+    // Real-time automatic background polling every 30 seconds for live minutes and scores
+    const pollInterval = setInterval(() => {
+      reloadMatches(false);
+    }, 30000);
+
+    return () => clearInterval(pollInterval);
   }, []);
 
   const initApp = async () => {
@@ -111,7 +119,7 @@ export default function App() {
       }
 
       // 3. Fetch matches and leagues
-      await reloadMatches();
+      await reloadMatches(false);
       const leaguesData = await api.getLeagues();
       setLeagues(leaguesData.leagues || []);
     } catch (err) {
@@ -121,12 +129,27 @@ export default function App() {
     }
   };
 
-  const reloadMatches = async () => {
+  const reloadMatches = async (showSpinner = false) => {
+    if (showSpinner) setIsRefreshing(true);
     try {
       const data = await api.getMatches();
       setMatches(data.matches || []);
     } catch (err) {
       console.error('Error reloading matches:', err);
+    } finally {
+      if (showSpinner) setIsRefreshing(false);
+    }
+  };
+
+  const handleManualSync = async () => {
+    setIsRefreshing(true);
+    try {
+      await api.triggerLiveSync();
+      await reloadMatches(false);
+    } catch (err) {
+      console.warn('Manual sync warning:', err);
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -268,27 +291,40 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Status Segmented Buttons */}
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                {[
-                  { id: 'ALL', label: 'Barchasi', count: matches.length },
-                  { id: 'LIVE', label: '🔴 Jonli efirda', count: liveCount },
-                  { id: 'SCHEDULED', label: 'Bugun & Kelgusi', count: matches.filter(m => m.status === 'SCHEDULED').length },
-                  { id: 'FINISHED', label: 'Yakunlangan', count: matches.filter(m => m.status === 'FINISHED').length },
-                ].map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setStatusFilter(s.id)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
-                      statusFilter === s.id
-                        ? 'bg-slate-800 text-white border border-slate-700 shadow-sm font-semibold'
-                        : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-900'
-                    }`}
-                  >
-                    <span>{s.label}</span>
-                    <span className="text-[11px] font-mono text-slate-500">({s.count})</span>
-                  </button>
-                ))}
+              {/* Status Segmented Buttons & Real-Time Sync */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  {[
+                    { id: 'ALL', label: 'Barchasi', count: matches.length },
+                    { id: 'LIVE', label: '🔴 Jonli efirda', count: liveCount },
+                    { id: 'SCHEDULED', label: 'Bugun & Kelgusi', count: matches.filter(m => m.status === 'SCHEDULED').length },
+                    { id: 'FINISHED', label: 'Yakunlangan', count: matches.filter(m => m.status === 'FINISHED').length },
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => setStatusFilter(s.id)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 ${
+                        statusFilter === s.id
+                          ? 'bg-slate-800 text-white border border-slate-700 shadow-sm font-semibold'
+                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-900'
+                      }`}
+                    >
+                      <span>{s.label}</span>
+                      <span className="text-[11px] font-mono text-slate-500">({s.count})</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Instant Real-Time Live Sync Button */}
+                <button
+                  onClick={handleManualSync}
+                  disabled={isRefreshing}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg text-xs text-slate-300 hover:text-white transition-colors disabled:opacity-60"
+                  title="Jonli efir va hisoblarni real vaqt rejimida yangilash"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-emerald-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  <span>{isRefreshing ? 'Yangilanmoqda...' : 'Real-time yangilash'}</span>
+                </button>
               </div>
 
               {/* League Filter Chips */}

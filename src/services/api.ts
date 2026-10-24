@@ -132,6 +132,21 @@ export const api = {
     return (await res.json()) as { match: Match };
   },
 
+  async getLiveMatches() {
+    const res = await fetch('/api/matches/live', { headers: getHeaders() });
+    if (!res.ok) throw new Error('Jonli o\'yinlarni yuklashda xatolik');
+    return (await res.json()) as { liveMatches: Match[]; count: number };
+  },
+
+  async triggerLiveSync() {
+    const res = await fetch('/api/sync/live', {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+    const result = await res.json();
+    return result as { syncedCount?: number; liveCount?: number; status?: string; message?: string };
+  },
+
   async getLeagues() {
     const res = await fetch('/api/leagues', { headers: getHeaders() });
     if (!res.ok) throw new Error('Ligalarni yuklashda xatolik');
