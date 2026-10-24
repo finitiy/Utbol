@@ -79,6 +79,79 @@ app.get(['/api/health', '/healthz', '/api/ping'], (_req: Request, res: Response)
 });
 
 // -------------------------------------------------------------
+// STREAM PROXY (Provides CORS * and HTTPS proxy for live sports streams)
+// -------------------------------------------------------------
+app.get('/api/stream-proxy', async (req: Request, res: Response) => {
+  const targetUrl = req.query.url as string;
+  if (!targetUrl || !targetUrl.startsWith('http')) {
+    return res.status(400).send('Invalid url parameter');
+  }
+
+  try {
+    const upstreamRes = await fetch(targetUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': new URL(targetUrl).origin,
+      },
+    });
+
+    if (!upstreamRes.ok) {
+      return res.status(upstreamRes.status).send(`Upstream returned ${upstreamRes.status}`);
+    }
+
+    const contentType = upstreamRes.headers.get('content-type') || '';
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+    res.setHeader('Cache-Control', 'no-cache');
+
+    const isPlaylist = targetUrl.includes('.m3u8') || contentType.includes('mpegurl') || contentType.includes('application/x-mpegurl');
+
+    if (isPlaylist) {
+      const text = await upstreamRes.text();
+      res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+
+      const baseUrl = new URL(targetUrl);
+      const lines = text.split('\n');
+      const rewritten = lines.map((line) => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) {
+          if (trimmed.includes('URI="')) {
+            return trimmed.replace(/URI="([^"]+)"/g, (_match, uri) => {
+              try {
+                const resolved = new URL(uri, baseUrl).toString();
+                return `URI="/api/stream-proxy?url=${encodeURIComponent(resolved)}"`;
+              } catch {
+                return _match;
+              }
+            });
+          }
+          return line;
+        }
+
+        try {
+          const resolved = new URL(trimmed, baseUrl).toString();
+          return `/api/stream-proxy?url=${encodeURIComponent(resolved)}`;
+        } catch {
+          return line;
+        }
+      }).join('\n');
+
+      return res.send(rewritten);
+    } else {
+      if (contentType) {
+        res.setHeader('Content-Type', contentType);
+      } else if (targetUrl.includes('.ts')) {
+        res.setHeader('Content-Type', 'video/mp2t');
+      }
+      const arrayBuffer = await upstreamRes.arrayBuffer();
+      return res.send(Buffer.from(arrayBuffer));
+    }
+  } catch (err: any) {
+    return res.status(502).send('Error proxying stream: ' + err.message);
+  }
+});
+
+// -------------------------------------------------------------
 // 1. AUTHENTICATION ENDPOINTS
 // -------------------------------------------------------------
 

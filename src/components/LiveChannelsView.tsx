@@ -10,93 +10,93 @@ import { LiveChannel } from '../types/index.ts';
 
 const CHANNELS: LiveChannel[] = [
   {
-    id: 'ch-trt-world',
-    name: "TRT World HD (Sport & News)",
-    country: "Turkiya & Xalqaro",
+    id: 'ch-rmtv-en',
+    name: "Real Madrid TV HD (English Efir)",
+    country: "Ispaniya / Xalqaro (Ingliz tilida)",
+    logoUrl: 'https://crests.football-data.org/86.png',
+    currentProgram: "Jonli Futbol: Real Madrid uchrashuvlari, El Clásico tahlillari va mashg'ulotlar",
+    streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'rm-en-1', name: "Real Madrid TV (1080p FHD)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'rm-en-2', name: "Zaxira: Real Madrid TV (Español)", url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'rm-en-3', name: "Zaxira: AS3 Football HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: 'HD' },
+    ]
+  },
+  {
+    id: 'ch-rmtv-es',
+    name: "Real Madrid TV (Español HD)",
+    country: "Ispaniya (Ispan tilida)",
+    logoUrl: 'https://crests.football-data.org/86.png',
+    currentProgram: "La Liga va Chempionlar Ligasi bahslari tahlili, jonli matbuot anjumani",
+    streamUrl: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'rm-es-1', name: "Real Madrid TV Español (1080p)", url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'rm-es-2', name: "Zaxira: Real Madrid TV (English)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'rm-es-3', name: "Zaxira: Africa 24 Sport", url: 'https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8', type: 'HLS', quality: 'HD' },
+    ]
+  },
+  {
+    id: 'ch-as3-sport',
+    name: "AS3 Sport Live (Xalqaro Futbol HD)",
+    country: "Xalqaro / Lotin Amerikasi",
     logoUrl: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "World Sports Live: Futbol va xalqaro sport yangiliklari",
-    streamUrl: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8',
+    currentProgram: "Jonli futbol o'yinlari, kubok uchrashuvlari va xalqaro chempionatlar",
+    streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
     streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 'trt-1', name: "TRT World (1080p FHD)", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
-      { id: 'trt-2', name: "Zaxira: FastSports 1 HD", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '720p HD' },
-      { id: 'trt-3', name: "Zaxira: DW Sport Live", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: 'HD' },
+      { id: 'as3-1', name: "AS3 Sport HD (1080p)", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'as3-2', name: "Zaxira: Real Madrid TV HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'as3-3', name: "Zaxira: Africa 24 Sport", url: 'https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8', type: 'HLS', quality: 'HD' },
     ]
   },
   {
-    id: 'ch-dw-sport',
-    name: "DW News & Sports Global (HD)",
-    country: "Germaniya & Global",
-    logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "Bundesliga, Chempionlar Ligasi va sport sharhlari",
-    streamUrl: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8',
-    streamType: 'HLS',
-    isLive: true,
-    sources: [
-      { id: 'dw-1', name: "DW Global (HD Efir)", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p HD', isDefault: true },
-      { id: 'dw-2', name: "Zaxira: TRT World HD", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p' },
-      { id: 'dw-3', name: "Zaxira: Sports Arena", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: 'HD' },
-    ]
-  },
-  {
-    id: 'ch-rt-sport',
-    name: "RT News Live HD (Sport & Highlights)",
-    country: "Xalqaro / Rossiya",
-    logoUrl: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "Jahon sporti, gollar va o'yinlar tahlili",
-    streamUrl: 'https://rt-glb.rttv.com/live/rtnews/playlist.m3u8',
-    streamType: 'HLS',
-    isLive: true,
-    sources: [
-      { id: 'rt-1', name: "RT News Live (1080p)", url: 'https://rt-glb.rttv.com/live/rtnews/playlist.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
-      { id: 'rt-2', name: "RT Documentary HD", url: 'https://rt-glb.rttv.com/live/rtdoc/playlist.m3u8', type: 'HLS', quality: '720p' },
-      { id: 'rt-3', name: "Zaxira: FastSports 1", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: 'HD' },
-    ]
-  },
-  {
-    id: 'ch-rt-doc',
-    name: "RT Documentary & Sport HD",
-    country: "Xalqaro",
-    logoUrl: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "Maxsus sport hujjatli filmlari va musobaqalar",
-    streamUrl: 'https://rt-glb.rttv.com/live/rtdoc/playlist.m3u8',
-    streamType: 'HLS',
-    isLive: true,
-    sources: [
-      { id: 'doc-1', name: "RT Doc Live HD", url: 'https://rt-glb.rttv.com/live/rtdoc/playlist.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
-      { id: 'doc-2', name: "Zaxira: TRT World", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: 'FHD' },
-      { id: 'doc-3', name: "Zaxira: DW Global", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p' },
-    ]
-  },
-  {
-    id: 'ch-fast-sports',
-    name: "FastSports 1 HD (Action & Football)",
-    country: "Global / AQSH",
-    logoUrl: 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "Tezkor futbol oqimi, xalqaro matchlar va turnirlar",
-    streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-    streamType: 'HLS',
-    isLive: true,
-    sources: [
-      { id: 'fs-1', name: "FastSports 1 (1080p 60fps)", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p 60fps', isDefault: true },
-      { id: 'fs-2', name: "FastSports 2 (Adaptive)", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: 'HD' },
-      { id: 'fs-3', name: "Zaxira: TRT World", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p' },
-    ]
-  },
-  {
-    id: 'ch-sports-arena',
-    name: "Sports Max Arena (FHD)",
-    country: "Xalqaro Arena",
+    id: 'ch-fifa-plus',
+    name: "FIFA+ Football Arena (Jahon Futboli)",
+    country: "FIFA / Global",
     logoUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "Ultra yuqori sifatli sport efirlari va stadion panoramasi",
-    streamUrl: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    currentProgram: "FIFA Jahon Chempionati to'liq matchlari, gollar va afsonaviy o'yinlar",
+    streamUrl: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8',
     streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 'sma-1', name: "Sports Arena (FHD)", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
-      { id: 'sma-2', name: "FastSports 1 HD", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p' },
-      { id: 'sma-3', name: "DW Global Sport", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p' },
+      { id: 'fifa-1', name: "FIFA+ Football (720p HD)", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD', isDefault: true },
+      { id: 'fifa-2', name: "Zaxira: Real Madrid TV (1080p)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'fifa-3', name: "Zaxira: Red Bull Arena 60fps", url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', type: 'HLS', quality: '60fps' },
+    ]
+  },
+  {
+    id: 'ch-africa24-sport',
+    name: "Africa 24 Sport HD (Jonli Futbol)",
+    country: "Afrika & Xalqaro",
+    logoUrl: 'https://i0.wp.com/africa24tv.com/wp-content/uploads/2023/12/LOGO-AFRICASPORT-4-HD-sans-fond.png?fit=512%2C107&ssl=1',
+    currentProgram: "Xalqaro futbol ligalari, terma jamoalar va qit'a musobaqalari",
+    streamUrl: 'https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'afr-1', name: "Africa 24 Sport (1080p HD)", url: 'https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'afr-2', name: "Zaxira: AS3 Football HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'afr-3', name: "Zaxira: Real Madrid TV HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: 'HD' },
+    ]
+  },
+  {
+    id: 'ch-redbull-soccer',
+    name: "Red Bull Football Arena (HD 60fps)",
+    country: "Global & Avstriya",
+    logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=120&auto=format&fit=crop&q=80',
+    currentProgram: "Futbol maydonlari, yosh iste'dodlar va xalqaro o'rtoqlik bahslari",
+    streamUrl: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8',
+    streamType: 'HLS',
+    isLive: true,
+    sources: [
+      { id: 'rb-1', name: "Red Bull Soccer (1080p 60fps)", url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', type: 'HLS', quality: '1080p 60fps', isDefault: true },
+      { id: 'rb-2', name: "Zaxira: Real Madrid TV (English)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p' },
+      { id: 'rb-3', name: "Zaxira: FIFA+ Arena", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p' },
     ]
   }
 ];

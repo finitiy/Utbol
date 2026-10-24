@@ -489,7 +489,7 @@ export class TelegramBotService {
       `Bu yerda siz:\n` +
       `• O'zbekiston Superligasi va jahon chempionatlari jonli translatsiyalari\n` +
       `• Bugungi o'yinlar jadvali va real vaqtdagi jonli hisoblar\n` +
-      `• TRT World, DW, RT News va FastSports kabi jonli sport telekanallari\n` +
+      `• Real Madrid TV HD, AS3 Sport, FIFA+ kabi jonli futbol telekanallari\n` +
       `• Sevimli jamoalaringiz natijalari haqida tezkor xabarlarni kuzatishingiz mumkin.\n\n` +
       `📱 Quyidagi <b>"🚀 Web Appda ochish"</b> tugmasi orqali to'g'ridan-to'g'ri Telegram ichida tomosha qiling!`;
 
@@ -537,20 +537,20 @@ export class TelegramBotService {
   }
 
   public getChannelsMessage(): string {
-    return `📺 <b>JONLI SPORT TELEKANALLARI</b>\n\n` +
+    return `📺 <b>JONLI FUTBOL TELEKANALLARI</b>\n\n` +
       `Barcha telekanallar to'g'ridan-to'g'ri ilova ichida uzluksiz ishlamoqda:\n\n` +
-      `1️⃣ <b>TRT World HD (Sport & News)</b>\n` +
-      `   🌍 Turkiya & Xalqaro | 1080p FHD jonli efir\n\n` +
-      `2️⃣ <b>DW News & Sports Global (HD)</b>\n` +
-      `   🇩🇪 Germaniya & Global | 24/7 jonli efir\n\n` +
-      `3️⃣ <b>RT News Live HD (Sport & News)</b>\n` +
-      `   🌐 Xalqaro & Rossiya | 1080p jonli efir\n\n` +
-      `4️⃣ <b>RT Documentary & Sport HD</b>\n` +
-      `   🎥 Xalqaro hujjatli va sport efirlari\n\n` +
-      `5️⃣ <b>FastSports 1 HD (Action Sports)</b>\n` +
-      `   ⚡ Tezkor sport va futbol xabarlari\n\n` +
-      `6️⃣ <b>FastSports 2 (Live Football Arena)</b>\n` +
-      `   ⚽ Futbol uchrashuvlari va sharhlar\n\n` +
+      `1️⃣ <b>Real Madrid TV HD (English)</b>\n` +
+      `   👑 Real Madrid rasmiy kanali | 1080p FHD jonli efir\n\n` +
+      `2️⃣ <b>Real Madrid TV (Español)</b>\n` +
+      `   🇪🇸 Ispaniya La Ligasi va UCL matchlari tahlili\n\n` +
+      `3️⃣ <b>AS3 Sport TV (Futbol HD)</b>\n` +
+      `   ⚽ Xalqaro ligalar va kubok bahslari\n\n` +
+      `4️⃣ <b>FIFA+ Football Arena</b>\n` +
+      `   🏆 Jahon Chempionati o'yinlari va afsonaviy gollar\n\n` +
+      `5️⃣ <b>Africa 24 Sport (1080p)</b>\n` +
+      `   🌍 Qit'a va Yevropa chempionatlari jonli efiri\n\n` +
+      `6️⃣ <b>Red Bull Football Arena</b>\n` +
+      `   ⚡ Tezkor futbol o'yinlari va turnirlar (60fps)\n\n` +
       `📲 Kanallarni tomosha qilish uchun <b>"🚀 Web Appda ochish"</b> tugmasini bosing!`;
   }
 

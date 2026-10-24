@@ -252,13 +252,13 @@ class DatabaseStore {
       homeScore: 2,
       awayScore: 1,
       broadcaster: b1,
-      streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm1-s1', name: "FastSports 1 HD (1080p)", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
-        { id: 'm1-s2', name: "TRT World Sport HD", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p Live' },
-        { id: 'm1-s3', name: "DW Sport Global (HD)", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p HD' },
-        { id: 'm1-s4', name: "RT News Live HD", url: 'https://rt-glb.rttv.com/live/rtnews/playlist.m3u8', type: 'HLS', quality: '1080p' }
+        { id: 'm1-s1', name: "Real Madrid TV (English FHD)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+        { id: 'm1-s2', name: "AS3 Sport Football HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
+        { id: 'm1-s3', name: "Real Madrid TV (Español)", url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8', type: 'HLS', quality: '1080p' },
+        { id: 'm1-s4', name: "FIFA+ Football Arena", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD' }
       ],
       isPublished: true,
       isFeatured: true,
@@ -282,13 +282,13 @@ class DatabaseStore {
       homeScore: 1,
       awayScore: 1,
       broadcaster: b2,
-      streamUrl: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+      streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm2-s1', name: "Sports Max Arena (FHD)", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
-        { id: 'm2-s2', name: "FastSports 1 HD", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p 50fps' },
-        { id: 'm2-s3', name: "TRT World Sport HD", url: 'https://tv-trtworld.medya.trt.com.tr/master.m3u8', type: 'HLS', quality: '1080p Live' },
-        { id: 'm2-s4', name: "DW Sport Global (HD)", url: 'https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8', type: 'HLS', quality: '720p' }
+        { id: 'm2-s1', name: "Real Madrid TV (Official FHD)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+        { id: 'm2-s2', name: "AS3 Sport Football HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
+        { id: 'm2-s3', name: "Real Madrid TV (Español)", url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8', type: 'HLS', quality: '1080p' },
+        { id: 'm2-s4', name: "Africa 24 Sport HD", url: 'https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8', type: 'HLS', quality: '1080p' }
       ],
       isPublished: true,
       isFeatured: true,
