@@ -1,0 +1,237 @@
+// Prisma Schema for Futbol Live Uzbekistan
+// Compatible with PostgreSQL (Supabase, Neon, Railway, Render, Self-hosted VPS)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum MatchStatus {
+  SCHEDULED
+  IN_PLAY
+  PAUSED
+  FINISHED
+  POSTPONED
+  CANCELLED
+}
+
+enum StreamType {
+  HLS
+  EMBED
+  EXTERNAL
+}
+
+model User {
+  id               String          @id @default(uuid())
+  email            String          @unique
+  username         String          @unique
+  passwordHash     String
+  role             Role            @default(USER)
+  status           AccountStatus   @default(ACTIVE)
+  isEmailVerified  Boolean         @default(false)
+  verificationCode String?
+  resetToken       String?
+  resetExpiresAt   DateTime?
+  avatarUrl        String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  sessions         Session[]
+  telegramAccount  TelegramAccount?
+  favorites        Favorite[]
+  subscriptions    NotificationSubscription[]
+  auditLogs        AuditLog[]
+
+  @@index([email])
+  @@index([username])
+  @@index([role])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  sessionToken String   @unique
+  expiresAt    DateTime
+  userAgent    String?
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sessionToken])
+}
+
+model TelegramAccount {
+  id               String   @id @default(uuid())
+  telegramId       String   @unique
+  username         String?
+  firstName        String?
+  lastName         String?
+  photoUrl         String?
+  authDate         DateTime?
+  userId           String   @unique
+  isLinked         Boolean  @default(true)
+  notificationsOn  Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([telegramId])
+}
+
+model League {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  country     String
+  logoUrl     String?
+  season      String   @default("2025/2026")
+  priority    Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  teams       Team[]
+  matches     Match[]
+
+  @@index([code])
+}
+
+model Team {
+  id          String   @id @default(uuid())
+  leagueId    String
+  name        String
+  shortName   String
+  tla         String   @default("")
+  crestUrl    String
+  stadium     String?
+  createdAt   DateTime @default(now())
+
+  league      League   @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  homeMatches Match[]  @relation("HomeTeamMatches")
+  awayMatches Match[]  @relation("AwayTeamMatches")
+  favorites   Favorite[]
+
+  @@index([leagueId])
+  @@index([name])
+}
+
+model Broadcaster {
+  id                String   @id @default(uuid())
+  name              String   @unique
+  logoUrl           String?
+  websiteUrl        String
+  country           String   @default("Uzbekistan")
+  isOfficialPartner Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  matches           Match[]
+}
+
+model Match {
+  id                String       @id @default(uuid())
+  externalId        String?      @unique
+  leagueId          String
+  homeTeamId        String
+  awayTeamId        String
+  utcDate           DateTime
+  status            MatchStatus  @default(SCHEDULED)
+  minute            Int?         @default(0)
+  homeScore         Int?
+  awayScore         Int?
+  venue             String?
+  round             String?
+  broadcasterId     String?
+  streamUrl         String?
+  streamType        StreamType   @default(EXTERNAL)
+  isPublished       Boolean      @default(true)
+  isFeatured        Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  league            League       @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  homeTeam          Team         @relation("HomeTeamMatches", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  awayTeam          Team         @relation("AwayTeamMatches", fields: [awayTeamId], references: [id], onDelete: Cascade)
+  broadcaster       Broadcaster? @relation(fields: [broadcasterId], references: [id], onDelete: SetNull)
+  subscriptions     NotificationSubscription[]
+
+  @@index([leagueId])
+  @@index([utcDate])
+  @@index([status])
+  @@index([isPublished])
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  teamId    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, teamId])
+  @@index([userId])
+}
+
+model NotificationSubscription {
+  id            String   @id @default(uuid())
+  userId        String?
+  telegramId    String
+  matchId       String
+  notifyKickoff Boolean  @default(true)
+  notifyGoals   Boolean  @default(true)
+  notifyResults Boolean  @default(true)
+  isSent        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match         Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([telegramId])
+  @@index([matchId])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  adminId     String?
+  adminName   String
+  action      String
+  targetType  String
+  targetId    String?
+  details     String
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  admin       User?    @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([adminId])
+}
+
+model AppSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@index([key])
+}

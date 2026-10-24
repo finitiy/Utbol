@@ -1,0 +1,6 @@
+{
+  "name": "Futbol Live Uzbekistan",
+  "description": "O'zbekiston va jahon futboli jonli efirlari, Telegram bot va mini-ilova, o'yinlar taqvimi va qulay hisoblar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
