@@ -127,16 +127,19 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         </div>
       </div>
 
-      {/* Card Footer: Broadcaster & Action */}
-      <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-        <div className="flex items-center gap-1.5 truncate">
-          <Tv className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-          <span className="truncate">{match.broadcaster?.name || "Rasmiy telekanal"}</span>
+      {/* Prominent TV Channel Banner ("Qaysi kanalda namoyish etiladi") */}
+      <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-950/90 border border-slate-700/80 text-slate-200 font-bold text-xs truncate shadow-inner">
+          <Tv className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <span className="text-slate-400 font-normal">Kanal:</span>
+          <span className="text-emerald-300 font-bold tracking-wide truncate">
+            {match.broadcaster?.name || "Sport TV (MTRK)"}
+          </span>
         </div>
 
         <div className="flex items-center gap-1 font-medium group-hover:translate-x-0.5 transition-transform shrink-0">
-          <span className={isLive ? "text-rose-400 font-bold flex items-center gap-1" : "text-emerald-400 font-semibold"}>
-            {isLive ? "▶ Jonli efir" : "Efirni ko'rish"}
+          <span className={isLive ? "text-rose-400 font-bold flex items-center gap-1 text-xs" : "text-emerald-400 font-semibold text-xs"}>
+            {isLive ? "▶ Jonli efir" : "Efir tafsiloti"}
           </span>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         </div>

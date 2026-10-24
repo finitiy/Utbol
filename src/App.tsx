@@ -546,12 +546,14 @@ export default function App() {
               <span className="font-bold text-white text-sm">Futbol Live Uzbekistan</span>
             </div>
             <div className="flex flex-wrap items-center gap-4 text-[11px] text-slate-400">
-              <span>Rasmiy media hamkorlar:</span>
-              <span className="text-slate-300">Sport TV (MTRK)</span>
+              <span>Rasmiy telekanallar:</span>
+              <span className="text-slate-300 font-medium">Sport TV (MTRK)</span>
               <span>·</span>
-              <span className="text-slate-300">UzReport TV</span>
+              <span className="text-slate-300 font-medium">UzReport TV</span>
               <span>·</span>
-              <span className="text-slate-300">Setanta Sports</span>
+              <span className="text-slate-300 font-medium">Futbol TV</span>
+              <span>·</span>
+              <span className="text-slate-300 font-medium">Setanta Sports</span>
             </div>
           </div>
           <div className="border-t border-slate-900 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">

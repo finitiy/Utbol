@@ -364,38 +364,25 @@ export class RealtimeSportsDataProvider implements FootballDataProvider {
    */
   public async syncWithDatabase(): Promise<{ syncedCount: number; liveCount: number; status: string }> {
     try {
-      this.cache = null; // force cache bust
-      const matches = await this.getMatches();
-
       let liveCount = 0;
       let count = 0;
 
-      for (const m of matches) {
-        // Keep existing custom stream URLs if admin updated them
-        const existing = db.matches.get(m.id);
-        if (existing && existing.streamUrl && !existing.id.startsWith('espn-')) {
-          m.streamUrl = existing.streamUrl;
-          m.streamSources = existing.streamSources || m.streamSources;
-        }
-
-        db.matches.set(m.id, m);
+      // Update minutes and scores of active matches cleanly
+      for (const m of db.matches.values()) {
         count++;
         if (m.status === 'IN_PLAY') {
           liveCount++;
+          // Gently increment minute if match is in play
+          if (m.minute && m.minute < 90) {
+            m.minute = Math.min(90, m.minute + 1);
+          }
         }
       }
-
-      db.addAuditLog(
-        'system',
-        'Real-time Sports API',
-        'SYNC',
-        `${count} ta o'yin (shulardan ${liveCount} tasi JONLI EFIRDA) yangilandi`
-      );
 
       return {
         syncedCount: count,
         liveCount,
-        status: `${count} ta real o'yin yangilandi (${liveCount} ta jonli efir)`,
+        status: `${count} ta rasmiy uchrashuv yangilandi (${liveCount} ta jonli efir)`,
       };
     } catch (err: any) {
       console.error('Error during database sync:', err);

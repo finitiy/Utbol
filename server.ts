@@ -472,17 +472,7 @@ app.post('/api/auth/telegram/quick-login', (req: Request, res: Response) => {
 
 // List all matches with filters
 app.get('/api/matches', async (req: Request, res: Response) => {
-  const { status, leagueId, search, refresh } = req.query;
-
-  // Auto-sync if requested or if database doesn't have real external matches yet
-  const hasExternalMatches = Array.from(db.matches.values()).some((m) => m.id.startsWith('espn-') || m.id.startsWith('fdo-'));
-  if (refresh === 'true' || !hasExternalMatches) {
-    try {
-      await footballProvider.syncWithDatabase();
-    } catch (syncErr) {
-      console.warn('Sync on /api/matches warning:', syncErr);
-    }
-  }
+  const { status, leagueId, search } = req.query;
 
   let matches = Array.from(db.matches.values());
 

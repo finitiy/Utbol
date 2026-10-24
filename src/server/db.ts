@@ -119,10 +119,10 @@ class DatabaseStore {
       createdAt: new Date().toISOString(),
     });
 
-    // 2. Broadcasters
+    // 2. Broadcasters (Authentic TV Channels in Uzbekistan)
     const b1: Broadcaster = {
       id: 'bc-sport-uz',
-      name: "Sport TV O'zbekiston (MTRK)",
+      name: "Sport TV (MTRK)",
       websiteUrl: 'https://mtrk.uz/uz/tv/sport',
       country: "O'zbekiston",
       isOfficialPartner: true,
@@ -135,21 +135,28 @@ class DatabaseStore {
       isOfficialPartner: true,
     };
     const b3: Broadcaster = {
-      id: 'bc-setanta',
-      name: 'Setanta Sports O\'zbekiston',
-      websiteUrl: 'https://setantasports.com',
-      country: 'Xalqaro / Markaziy Osiyo',
+      id: 'bc-futbol-tv',
+      name: 'Futbol TV',
+      websiteUrl: 'https://uzreport.news',
+      country: "O'zbekiston",
       isOfficialPartner: true,
     };
     const b4: Broadcaster = {
-      id: 'bc-foreign',
-      name: 'FastSports / Official Stream',
-      websiteUrl: 'https://www.uefa.com',
-      country: 'UEFA',
+      id: 'bc-setanta-1',
+      name: 'Setanta Sports 1 HD',
+      websiteUrl: 'https://setantasports.com',
+      country: "O'zbekiston / Xalqaro",
+      isOfficialPartner: true,
+    };
+    const b5: Broadcaster = {
+      id: 'bc-setanta-2',
+      name: 'Setanta Sports 2 HD',
+      websiteUrl: 'https://setantasports.com',
+      country: "O'zbekiston / Xalqaro",
       isOfficialPartner: true,
     };
 
-    [b1, b2, b3, b4].forEach((b) => this.broadcasters.set(b.id, b));
+    [b1, b2, b3, b4, b5].forEach((b) => this.broadcasters.set(b.id, b));
 
     // 3. Leagues
     const lSuperliga: League = {
@@ -211,7 +218,7 @@ class DatabaseStore {
 
     // 4. Teams
     const teamsList: Team[] = [
-      // Uzbekistan Superliga
+      // Uzbekistan Superliga Teams
       { id: 'uz-navbahor', name: 'Navbahor Namangan', shortName: 'Navbahor', tla: 'NAV', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/9/90/PFC_Navbahor_Namangan_logo.png/180px-PFC_Navbahor_Namangan_logo.png', leagueId: 'league-uz-superliga', stadium: "Markaziy Stadioni, Namangan" },
       { id: 'uz-pakhtakor', name: 'Paxtakor Toshkent', shortName: 'Paxtakor', tla: 'PAK', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/9/96/FC_Pakhtakor_Tashkent_logo.png/180px-FC_Pakhtakor_Tashkent_logo.png', leagueId: 'league-uz-superliga', stadium: "Paxtakor Markaziy Stadioni, Toshkent" },
       { id: 'uz-nasaf', name: 'Nasaf Qarshi', shortName: 'Nasaf', tla: 'NAS', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/FC_Nasaf_logo.png/180px-FC_Nasaf_logo.png', leagueId: 'league-uz-superliga', stadium: "Markaziy Stadioni, Qarshi" },
@@ -220,15 +227,24 @@ class DatabaseStore {
       { id: 'uz-agmk', name: 'OKMK Olmaliq', shortName: 'OKMK', tla: 'AGM', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/4b/FC_AGMK_logo.png/180px-FC_AGMK_logo.png', leagueId: 'league-uz-superliga', stadium: "OKMK Sport Majmuasi, Olmaliq" },
       { id: 'uz-andijon', name: 'Andijon FK', shortName: 'Andijon', tla: 'AND', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/52/FC_Andijon_logo.png/180px-FC_Andijon_logo.png', leagueId: 'league-uz-superliga', stadium: "Bobur Arena, Andijon" },
       { id: 'uz-dinamo', name: 'Dinamo Samarqand', shortName: 'Dinamo', tla: 'DIN', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/87/FC_Dinamo_Samarqand_logo.png/180px-FC_Dinamo_Samarqand_logo.png', leagueId: 'league-uz-superliga', stadium: "Dinamo Stadioni, Samarqand" },
+      { id: 'uz-sogdiana', name: 'So\'g\'diyona Jizzax', shortName: 'So\'g\'diyona', tla: 'SOG', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/07/Uzbekistan_Super_League_logo.png/220px-Uzbekistan_Super_League_logo.png', leagueId: 'league-uz-superliga', stadium: "Jizzax Markaziy Stadioni" },
+      { id: 'uz-qizilqum', name: 'Qizilqum Zarafshon', shortName: 'Qizilqum', tla: 'QIZ', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/07/Uzbekistan_Super_League_logo.png/220px-Uzbekistan_Super_League_logo.png', leagueId: 'league-uz-superliga', stadium: "Yoshlar Stadioni, Navoiy" },
+      { id: 'uz-surkhon', name: 'Surxon Termiz', shortName: 'Surxon', tla: 'SUR', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/07/Uzbekistan_Super_League_logo.png/220px-Uzbekistan_Super_League_logo.png', leagueId: 'league-uz-superliga', stadium: "Surxon Stadioni, Termiz" },
 
-      // European Teams
+      // European Giant Teams
       { id: 'eu-real-madrid', name: 'Real Madrid', shortName: 'Real Madrid', tla: 'RMA', crestUrl: 'https://crests.football-data.org/86.png', leagueId: 'league-laliga', stadium: 'Santiago Bernabéu, Madrid' },
       { id: 'eu-barcelona', name: 'FC Barcelona', shortName: 'Barcelona', tla: 'FCB', crestUrl: 'https://crests.football-data.org/81.png', leagueId: 'league-laliga', stadium: 'Camp Nou, Barselona' },
       { id: 'eu-man-city', name: 'Manchester City', shortName: 'Man City', tla: 'MCI', crestUrl: 'https://crests.football-data.org/65.png', leagueId: 'league-epl', stadium: 'Etihad Stadium, Manchester' },
       { id: 'eu-arsenal', name: 'Arsenal FC', shortName: 'Arsenal', tla: 'ARS', crestUrl: 'https://crests.football-data.org/57.png', leagueId: 'league-epl', stadium: 'Emirates Stadium, London' },
       { id: 'eu-liverpool', name: 'Liverpool FC', shortName: 'Liverpool', tla: 'LIV', crestUrl: 'https://crests.football-data.org/64.png', leagueId: 'league-epl', stadium: 'Anfield, Liverpool' },
+      { id: 'eu-chelsea', name: 'Chelsea FC', shortName: 'Chelsea', tla: 'CHE', crestUrl: 'https://crests.football-data.org/61.png', leagueId: 'league-epl', stadium: 'Stamford Bridge, London' },
+      { id: 'eu-man-utd', name: 'Manchester United', shortName: 'Man United', tla: 'MUN', crestUrl: 'https://crests.football-data.org/66.png', leagueId: 'league-epl', stadium: 'Old Trafford, Manchester' },
       { id: 'eu-bayern', name: 'Bayern Munich', shortName: 'Bayern', tla: 'FCB', crestUrl: 'https://crests.football-data.org/5.png', leagueId: 'league-ucl', stadium: 'Allianz Arena, Myunxen' },
       { id: 'eu-psg', name: 'Paris Saint-Germain', shortName: 'PSG', tla: 'PSG', crestUrl: 'https://crests.football-data.org/524.png', leagueId: 'league-ucl', stadium: 'Parc des Princes, Parij' },
+      { id: 'eu-inter', name: 'Inter Milan', shortName: 'Inter', tla: 'INT', crestUrl: 'https://crests.football-data.org/108.png', leagueId: 'league-seriea', stadium: 'San Siro, Milan' },
+      { id: 'eu-juve', name: 'Juventus', shortName: 'Juventus', tla: 'JUV', crestUrl: 'https://crests.football-data.org/109.png', leagueId: 'league-seriea', stadium: 'Allianz Stadium, Turin' },
+      { id: 'eu-milan', name: 'AC Milan', shortName: 'Milan', tla: 'MIL', crestUrl: 'https://crests.football-data.org/98.png', leagueId: 'league-seriea', stadium: 'San Siro, Milan' },
+      { id: 'eu-atletico', name: 'Atletico Madrid', shortName: 'Atletico', tla: 'ATM', crestUrl: 'https://crests.football-data.org/78.png', leagueId: 'league-laliga', stadium: 'Metropolitano, Madrid' },
     ];
 
     teamsList.forEach((t) => this.teams.set(t.id, t));
@@ -302,20 +318,18 @@ class DatabaseStore {
       leagueId: 'league-epl',
       leagueName: 'Angliya Premyer-ligasi',
       homeTeam: this.teams.get('eu-liverpool')!,
-      awayTeam: { id: 'eu-chelsea', name: 'Chelsea FC', shortName: 'Chelsea', tla: 'CHE', crestUrl: 'https://crests.football-data.org/61.png', leagueId: 'league-epl', stadium: 'Stamford Bridge, London' },
+      awayTeam: this.teams.get('eu-chelsea')!,
       utcDate: m3LiveDate,
       kickoffTashkent: formatTashkentTime(m3LiveDate),
       status: 'IN_PLAY',
       minute: 15,
       homeScore: 1,
       awayScore: 0,
-      broadcaster: b3,
+      broadcaster: b4, // Setanta Sports 1 HD
       streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm3l-s1', name: "Setanta Sports / AS3 Sport", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
-        { id: 'm3l-s2', name: "FIFA+ Football Arena", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD' },
-        { id: 'm3l-s3', name: "Real Madrid TV HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD' },
+        { id: 'm3l-s1', name: "Setanta Sports 1 HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
       ],
       isPublished: true,
       isFeatured: false,
@@ -335,12 +349,11 @@ class DatabaseStore {
       utcDate: m4Date,
       kickoffTashkent: formatTashkentTime(m4Date),
       status: 'SCHEDULED',
-      broadcaster: b1,
+      broadcaster: b1, // Sport TV (MTRK)
       streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm4-s1', name: "Sport TV O'zbekiston HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
-        { id: 'm4-s2', name: "AS3 Sport HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
+        { id: 'm4-s1', name: "Sport TV (MTRK)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
       ],
       isPublished: true,
       isFeatured: false,
@@ -360,12 +373,11 @@ class DatabaseStore {
       utcDate: m5Date,
       kickoffTashkent: formatTashkentTime(m5Date),
       status: 'SCHEDULED',
-      broadcaster: b2,
+      broadcaster: b3, // Futbol TV
       streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm5-s1', name: "UzReport TV Jonli Efir", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
-        { id: 'm5-s2', name: "RMTV Football HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p' },
+        { id: 'm5-s1', name: "Futbol TV", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
       ],
       isPublished: true,
       isFeatured: false,
@@ -385,12 +397,11 @@ class DatabaseStore {
       utcDate: m6Date,
       kickoffTashkent: formatTashkentTime(m6Date),
       status: 'SCHEDULED',
-      broadcaster: b1,
+      broadcaster: b1, // Sport TV (MTRK)
       streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm6-s1', name: "Sport TV / UCL HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
-        { id: 'm6-s2', name: "AS3 Sport Live", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
+        { id: 'm6-s1', name: "Sport TV (MTRK)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
       ],
       isPublished: true,
       isFeatured: true,
@@ -410,12 +421,11 @@ class DatabaseStore {
       utcDate: m7Date,
       kickoffTashkent: formatTashkentTime(m7Date),
       status: 'SCHEDULED',
-      broadcaster: b2,
+      broadcaster: b2, // UzReport TV
       streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm7-s1', name: "UzReport TV / La Liga", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
-        { id: 'm7-s2', name: "FIFA+ Football", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD' },
+        { id: 'm7-s1', name: "UzReport TV", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
       ],
       isPublished: true,
       isFeatured: false,
@@ -423,9 +433,9 @@ class DatabaseStore {
       competitionRound: '30-tur',
     });
 
-    // MATCH 8: Andijon FK vs Dinamo Samarqand (Superliga - ERTAGA)
-    const m8Id = 'match-up-001';
-    const m8Date = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    // MATCH 8: Andijon FK vs Dinamo Samarqand (Superliga - BUGUN 18:30)
+    const m8Id = 'match-today-005';
+    const m8Date = new Date(now.getTime() + 0.5 * 60 * 60 * 1000).toISOString();
     this.matches.set(m8Id, {
       id: m8Id,
       leagueId: 'league-uz-superliga',
@@ -435,11 +445,11 @@ class DatabaseStore {
       utcDate: m8Date,
       kickoffTashkent: formatTashkentTime(m8Date),
       status: 'SCHEDULED',
-      broadcaster: b1,
+      broadcaster: b3, // Futbol TV
       streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm8-s1', name: "Sport TV O'zbekiston HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+        { id: 'm8-s1', name: "Futbol TV", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
       ],
       isPublished: true,
       isFeatured: false,
@@ -447,23 +457,71 @@ class DatabaseStore {
       competitionRound: '22-tur',
     });
 
-    // MATCH 9: Paris Saint-Germain vs Inter Milan (UCL - ERTAGA)
-    const m9Id = 'match-up-002';
-    const m9Date = new Date(now.getTime() + 28 * 60 * 60 * 1000).toISOString();
+    // MATCH 9: Manchester City vs Arsenal (Premyer-liga - BUGUN 21:30)
+    const m9Id = 'match-today-006';
+    const m9Date = new Date(now.getTime() + 3.5 * 60 * 60 * 1000).toISOString();
     this.matches.set(m9Id, {
       id: m9Id,
-      leagueId: 'league-ucl',
-      leagueName: 'UEFA Chempionlar Ligasi',
-      homeTeam: this.teams.get('eu-psg')!,
-      awayTeam: { id: 'eu-inter', name: 'Inter Milan', shortName: 'Inter', tla: 'INT', crestUrl: 'https://crests.football-data.org/108.png', leagueId: 'league-seriea', stadium: 'San Siro, Milan' },
+      leagueId: 'league-epl',
+      leagueName: 'Angliya Premyer-ligasi',
+      homeTeam: this.teams.get('eu-man-city')!,
+      awayTeam: this.teams.get('eu-arsenal')!,
       utcDate: m9Date,
       kickoffTashkent: formatTashkentTime(m9Date),
       status: 'SCHEDULED',
-      broadcaster: b3,
+      broadcaster: b4, // Setanta Sports 1 HD
       streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm9-s1', name: "Setanta Sports HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
+        { id: 'm9-s1', name: "Setanta Sports 1 HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
+      ],
+      isPublished: true,
+      isFeatured: true,
+      venue: 'Etihad Stadium, Manchester',
+      competitionRound: '29-tur',
+    });
+
+    // MATCH 10: So'g'diyona Jizzax vs Qizilqum (Superliga - ERTAGA 18:00)
+    const m10Id = 'match-up-001';
+    const m10Date = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m10Id, {
+      id: m10Id,
+      leagueId: 'league-uz-superliga',
+      leagueName: "O'zbekiston Superligasi",
+      homeTeam: this.teams.get('uz-sogdiana')!,
+      awayTeam: this.teams.get('uz-qizilqum')!,
+      utcDate: m10Date,
+      kickoffTashkent: formatTashkentTime(m10Date),
+      status: 'SCHEDULED',
+      broadcaster: b1, // Sport TV (MTRK)
+      streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm10-s1', name: "Sport TV (MTRK)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      ],
+      isPublished: true,
+      isFeatured: false,
+      venue: "Jizzax Markaziy Stadioni",
+      competitionRound: '22-tur',
+    });
+
+    // MATCH 11: Paris Saint-Germain vs Inter Milan (UCL - ERTAGA 23:45)
+    const m11Id = 'match-up-002';
+    const m11Date = new Date(now.getTime() + 28 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m11Id, {
+      id: m11Id,
+      leagueId: 'league-ucl',
+      leagueName: 'UEFA Chempionlar Ligasi',
+      homeTeam: this.teams.get('eu-psg')!,
+      awayTeam: this.teams.get('eu-inter')!,
+      utcDate: m11Date,
+      kickoffTashkent: formatTashkentTime(m11Date),
+      status: 'SCHEDULED',
+      broadcaster: b2, // UzReport TV
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm11-s1', name: "UzReport TV", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
       ],
       isPublished: true,
       isFeatured: true,
@@ -471,44 +529,65 @@ class DatabaseStore {
       competitionRound: '1/4 Final',
     });
 
-    // MATCH 10: So'g'diyona vs Dinamo Samarqand (Superliga - YAKUNLANGAN)
-    const m10Id = 'match-fin-001';
-    const m10Date = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-    this.matches.set(m10Id, {
-      id: m10Id,
+    // MATCH 12: Manchester United vs Tottenham (Premyer-liga - ERTAGA 20:30)
+    const m12Id = 'match-up-003';
+    const m12Date = new Date(now.getTime() + 26 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m12Id, {
+      id: m12Id,
+      leagueId: 'league-epl',
+      leagueName: 'Angliya Premyer-ligasi',
+      homeTeam: this.teams.get('eu-man-utd')!,
+      awayTeam: { id: 'eu-tottenham', name: 'Tottenham Hotspur', shortName: 'Tottenham', tla: 'TOT', crestUrl: 'https://crests.football-data.org/73.png', leagueId: 'league-epl', stadium: 'Tottenham Hotspur Stadium' },
+      utcDate: m12Date,
+      kickoffTashkent: formatTashkentTime(m12Date),
+      status: 'SCHEDULED',
+      broadcaster: b4, // Setanta Sports 1 HD
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      isPublished: true,
+      isFeatured: false,
+      venue: 'Old Trafford, Manchester',
+      competitionRound: '29-tur',
+    });
+
+    // MATCH 13: Surxon Termiz 1 : 2 Paxtakor (Superliga - YAKUNLANGAN)
+    const m13Id = 'match-fin-001';
+    const m13Date = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m13Id, {
+      id: m13Id,
       leagueId: 'league-uz-superliga',
       leagueName: "O'zbekiston Superligasi",
-      homeTeam: { id: 'uz-sogdiana', name: 'So\'g\'diyona Jizzax', shortName: 'So\'g\'diyona', tla: 'SOG', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/07/Uzbekistan_Super_League_logo.png/220px-Uzbekistan_Super_League_logo.png', leagueId: 'league-uz-superliga', stadium: 'So\'g\'diyona Stadioni' },
-      awayTeam: this.teams.get('uz-dinamo')!,
-      utcDate: m10Date,
-      kickoffTashkent: formatTashkentTime(m10Date),
+      homeTeam: this.teams.get('uz-surkhon')!,
+      awayTeam: this.teams.get('uz-pakhtakor')!,
+      utcDate: m13Date,
+      kickoffTashkent: formatTashkentTime(m13Date),
       status: 'FINISHED',
-      homeScore: 2,
-      awayScore: 1,
-      broadcaster: b1,
+      homeScore: 1,
+      awayScore: 2,
+      broadcaster: b1, // Sport TV (MTRK)
       streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       isPublished: true,
       isFeatured: false,
-      venue: "Jizzax Markaziy Stadioni",
+      venue: "Surxon Stadioni, Termiz",
       competitionRound: '21-tur',
     });
 
-    // MATCH 11: Juventus vs AC Milan (Serie A - YAKUNLANGAN)
-    const m11Id = 'match-fin-002';
-    const m11Date = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
-    this.matches.set(m11Id, {
-      id: m11Id,
+    // MATCH 14: Juventus 1 : 0 AC Milan (Serie A - YAKUNLANGAN)
+    const m14Id = 'match-fin-002';
+    const m14Date = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m14Id, {
+      id: m14Id,
       leagueId: 'league-seriea',
       leagueName: 'Italiya Serie A',
-      homeTeam: { id: 'eu-juve', name: 'Juventus', shortName: 'Juventus', tla: 'JUV', crestUrl: 'https://crests.football-data.org/109.png', leagueId: 'league-seriea', stadium: 'Allianz Stadium' },
-      awayTeam: { id: 'eu-milan', name: 'AC Milan', shortName: 'Milan', tla: 'MIL', crestUrl: 'https://crests.football-data.org/98.png', leagueId: 'league-seriea', stadium: 'San Siro' },
-      utcDate: m11Date,
-      kickoffTashkent: formatTashkentTime(m11Date),
+      homeTeam: this.teams.get('eu-juve')!,
+      awayTeam: this.teams.get('eu-milan')!,
+      utcDate: m14Date,
+      kickoffTashkent: formatTashkentTime(m14Date),
       status: 'FINISHED',
       homeScore: 1,
       awayScore: 0,
-      broadcaster: b3,
+      broadcaster: b5, // Setanta Sports 2 HD
       streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
       streamType: 'HLS',
       isPublished: true,
@@ -516,6 +595,36 @@ class DatabaseStore {
       venue: 'Allianz Stadium, Turin',
       competitionRound: '28-tur',
     });
+
+    // MATCH 15: Real Madrid 3 : 2 FC Barcelona (El Clasico - YAKUNLANGAN)
+    const m15Id = 'match-fin-003';
+    const m15Date = new Date(now.getTime() - 72 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m15Id, {
+      id: m15Id,
+      leagueId: 'league-laliga',
+      leagueName: 'Ispaniya La Ligasi',
+      homeTeam: this.teams.get('eu-real-madrid')!,
+      awayTeam: this.teams.get('eu-barcelona')!,
+      utcDate: m15Date,
+      kickoffTashkent: formatTashkentTime(m15Date),
+      status: 'FINISHED',
+      homeScore: 3,
+      awayScore: 2,
+      broadcaster: b2, // UzReport TV
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      isPublished: true,
+      isFeatured: false,
+      venue: 'Santiago Bernabéu, Madrid',
+      competitionRound: '29-tur',
+    });
+
+    // Clean up any stale espn keys if any
+    for (const key of this.matches.keys()) {
+      if (key.startsWith('espn-')) {
+        this.matches.delete(key);
+      }
+    }
 
     // 6. Initial Audit Log
     this.auditLogs.push({

@@ -132,21 +132,28 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
           </div>
 
           {/* Action and Venue Info */}
-          <div className="lg:col-span-4 flex flex-col gap-4">
-            <div className="space-y-2 text-xs text-slate-300">
-              {featuredMatch.venue && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span className="truncate">{featuredMatch.venue}</span>
-                </div>
-              )}
-              {featuredMatch.broadcaster && (
-                <div className="flex items-center gap-2">
-                  <Tv className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Rasmiy telekanal: <strong>{featuredMatch.broadcaster.name}</strong></span>
-                </div>
-              )}
+          <div className="lg:col-span-4 flex flex-col gap-3">
+            {/* Prominent TV Channel Banner */}
+            <div className="flex items-center gap-3 p-3 bg-slate-950/90 rounded-xl border border-emerald-500/30 shadow-lg">
+              <div className="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                <Tv className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                  Namoyish etuvchi telekanal:
+                </span>
+                <span className="text-sm sm:text-base font-extrabold text-white tracking-wide truncate block">
+                  {featuredMatch.broadcaster?.name || "Sport TV (MTRK)"}
+                </span>
+              </div>
             </div>
+
+            {featuredMatch.venue && (
+              <div className="flex items-center gap-2 text-xs text-slate-300 px-1">
+                <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span className="truncate">{featuredMatch.venue}</span>
+              </div>
+            )}
 
             {/* Primary Watch Action */}
             <div className="flex flex-col sm:flex-row gap-3 pt-2">

@@ -141,28 +141,36 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
             />
           </div>
 
-          {/* Direct Stream Live Indicator & Subtle Refresh Control */}
-          <div className="flex items-center justify-between text-xs px-1 text-slate-300">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-semibold text-emerald-400">Jonli Translyatsiya:</span>
-              <span className="text-slate-300 font-medium truncate">
-                {match.broadcaster?.name || "Rasmiy telekanal"}
-              </span>
-              <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400">
-                1080p FHD
-              </span>
+          {/* Prominent TV Channel Callout ("Namoyish etuvchi telekanal") */}
+          <div className="p-4 bg-gradient-to-r from-emerald-950/60 via-slate-900 to-slate-950 border border-emerald-500/40 rounded-xl flex items-center justify-between gap-3 shadow-lg">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                <Tv className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold block">
+                  Namoyish etuvchi rasmiy telekanal:
+                </span>
+                <span className="text-base sm:text-lg font-black text-white tracking-wide truncate block">
+                  {match.broadcaster?.name || "Sport TV (MTRK)"}
+                </span>
+              </div>
             </div>
 
-            {sources.length > 1 && (
-              <button
-                onClick={handleSwitchToNextSource}
-                className="flex items-center gap-1.5 px-2.5 py-1 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/50 rounded-lg transition-colors text-[11px] font-medium"
-                title="Efir to'xtab qolsa boshqa zaxira oqimiga o'tish"
-              >
-                <span>Zaxira oqim 🔄</span>
-              </button>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-slate-800 text-slate-200 border border-slate-700">
+                1080p FHD
+              </span>
+              {sources.length > 1 && (
+                <button
+                  onClick={handleSwitchToNextSource}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/50 rounded-lg transition-colors text-[11px] font-medium"
+                  title="Efir to'xtab qolsa boshqa zaxira oqimiga o'tish"
+                >
+                  <span>Zaxira oqim 🔄</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Match Score Banner */}
