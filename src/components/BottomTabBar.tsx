@@ -49,15 +49,15 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
           )}
         </button>
 
-        {/* Tab 3: Live Channels */}
+        {/* Tab 3: Today's Matches */}
         <button
-          onClick={() => onSelectTab('channels')}
+          onClick={() => onSelectTab('today')}
           className={`flex flex-col items-center justify-center min-h-[44px] min-w-[44px] ${
-            currentTab === 'channels' ? 'text-rose-400 font-semibold' : 'text-slate-400'
+            currentTab === 'today' ? 'text-emerald-400 font-semibold' : 'text-slate-400'
           }`}
         >
-          <Radio className="w-5 h-5" />
-          <span className="text-[10px] tracking-tight mt-1">Kanallar</span>
+          <Calendar className="w-5 h-5" />
+          <span className="text-[10px] tracking-tight mt-1">Bugun</span>
         </button>
 
         {/* Tab 4: Standings */}

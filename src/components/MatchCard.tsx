@@ -134,9 +134,11 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           <span className="truncate">{match.broadcaster?.name || "Rasmiy telekanal"}</span>
         </div>
 
-        <div className="flex items-center gap-1 text-emerald-400 font-medium group-hover:translate-x-0.5 transition-transform shrink-0">
-          <span>{isLive ? "Jonli ko'rish" : "Tafsilotlar"}</span>
-          <ChevronRight className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1 font-medium group-hover:translate-x-0.5 transition-transform shrink-0">
+          <span className={isLive ? "text-rose-400 font-bold flex items-center gap-1" : "text-emerald-400 font-semibold"}>
+            {isLive ? "▶ Jonli efir" : "Efirni ko'rish"}
+          </span>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         </div>
       </div>
     </div>

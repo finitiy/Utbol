@@ -68,19 +68,20 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
             <button
               onClick={() => onSelectTab('live')}
-              className={`whitespace-nowrap transition-colors ${
-                currentTab === 'live' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
+              className={`whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                currentTab === 'live' ? 'text-rose-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >
-              Jonli efirlar
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              <span>Jonli efirlar</span>
             </button>
             <button
-              onClick={() => onSelectTab('channels')}
+              onClick={() => onSelectTab('today')}
               className={`whitespace-nowrap transition-colors ${
-                currentTab === 'channels' ? 'text-rose-400 font-semibold' : 'text-slate-300 hover:text-white'
+                currentTab === 'today' ? 'text-emerald-400 font-semibold' : 'text-slate-300 hover:text-white'
               }`}
             >
-              Telekanallar
+              Bugungi o'yinlar
             </button>
             <button
               onClick={() => onSelectTab('matches')}

@@ -233,12 +233,12 @@ class DatabaseStore {
 
     teamsList.forEach((t) => this.teams.set(t.id, t));
 
-    // 5. Matches (Live, Upcoming, Finished)
+    // 5. Matches (Organized cleanly: Live Now, Today Scheduled, Upcoming, and Finished)
     const now = new Date();
-    
-    // Live match 1: Navbahor vs Paxtakor (O'zbek El Klasikosi)
+
+    // MATCH 1: Navbahor vs Paxtakor (O'zbek El Klasikosi - LIVE NOW)
     const m1Id = 'match-live-001';
-    const m1Date = new Date(now.getTime() - 65 * 60 * 1000).toISOString();
+    const m1Date = new Date(now.getTime() - 68 * 60 * 1000).toISOString();
     this.matches.set(m1Id, {
       id: m1Id,
       leagueId: 'league-uz-superliga',
@@ -255,10 +255,9 @@ class DatabaseStore {
       streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm1-s1', name: "Real Madrid TV (English FHD)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+        { id: 'm1-s1', name: "Sport TV / Real Madrid TV FHD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
         { id: 'm1-s2', name: "AS3 Sport Football HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
-        { id: 'm1-s3', name: "Real Madrid TV (Español)", url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8', type: 'HLS', quality: '1080p' },
-        { id: 'm1-s4', name: "FIFA+ Football Arena", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD' }
+        { id: 'm1-s3', name: "FIFA+ Football Arena", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD' },
       ],
       isPublished: true,
       isFeatured: true,
@@ -266,9 +265,9 @@ class DatabaseStore {
       competitionRound: "22-tur",
     });
 
-    // Live match 2: Real Madrid vs Manchester City (UCL)
+    // MATCH 2: Real Madrid vs Manchester City (UCL - LIVE NOW)
     const m2Id = 'match-live-002';
-    const m2Date = new Date(now.getTime() - 35 * 60 * 1000).toISOString();
+    const m2Date = new Date(now.getTime() - 37 * 60 * 1000).toISOString();
     this.matches.set(m2Id, {
       id: m2Id,
       leagueId: 'league-ucl',
@@ -285,101 +284,237 @@ class DatabaseStore {
       streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
       streamType: 'HLS',
       streamSources: [
-        { id: 'm2-s1', name: "Real Madrid TV (Official FHD)", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
-        { id: 'm2-s2', name: "AS3 Sport Football HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
-        { id: 'm2-s3', name: "Real Madrid TV (Español)", url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8', type: 'HLS', quality: '1080p' },
-        { id: 'm2-s4', name: "Africa 24 Sport HD", url: 'https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8', type: 'HLS', quality: '1080p' }
+        { id: 'm2-s1', name: "UzReport TV / RMTV FHD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+        { id: 'm2-s2', name: "AS3 Sport Football Live", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
+        { id: 'm2-s3', name: "Africa 24 Sport 1080p", url: 'https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8', type: 'HLS', quality: '1080p' },
       ],
       isPublished: true,
       isFeatured: true,
       venue: 'Santiago Bernabéu, Madrid',
-      competitionRound: '1/4 Final, Birinchi bahs',
+      competitionRound: '1/4 Final',
     });
 
-    // Upcoming Match 1: Nasaf vs Neftchi (Bugun oqshom)
-    const m3Id = 'match-up-001';
-    const m3Date = new Date(now.getTime() + 2 * 60 * 60 * 1000).toISOString();
-    this.matches.set(m3Id, {
-      id: m3Id,
+    // MATCH 3: Liverpool vs Chelsea (Premyer-liga - LIVE NOW)
+    const m3LiveId = 'match-live-003';
+    const m3LiveDate = new Date(now.getTime() - 15 * 60 * 1000).toISOString();
+    this.matches.set(m3LiveId, {
+      id: m3LiveId,
+      leagueId: 'league-epl',
+      leagueName: 'Angliya Premyer-ligasi',
+      homeTeam: this.teams.get('eu-liverpool')!,
+      awayTeam: { id: 'eu-chelsea', name: 'Chelsea FC', shortName: 'Chelsea', tla: 'CHE', crestUrl: 'https://crests.football-data.org/61.png', leagueId: 'league-epl', stadium: 'Stamford Bridge, London' },
+      utcDate: m3LiveDate,
+      kickoffTashkent: formatTashkentTime(m3LiveDate),
+      status: 'IN_PLAY',
+      minute: 15,
+      homeScore: 1,
+      awayScore: 0,
+      broadcaster: b3,
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm3l-s1', name: "Setanta Sports / AS3 Sport", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
+        { id: 'm3l-s2', name: "FIFA+ Football Arena", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD' },
+        { id: 'm3l-s3', name: "Real Madrid TV HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD' },
+      ],
+      isPublished: true,
+      isFeatured: false,
+      venue: 'Anfield, Liverpool',
+      competitionRound: '29-tur',
+    });
+
+    // MATCH 4: Nasaf Qarshi vs Neftchi Farg'ona (Superliga - BUGUN 19:30)
+    const m4Id = 'match-today-001';
+    const m4Date = new Date(now.getTime() + 1.5 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m4Id, {
+      id: m4Id,
       leagueId: 'league-uz-superliga',
       leagueName: "O'zbekiston Superligasi",
       homeTeam: this.teams.get('uz-nasaf')!,
       awayTeam: this.teams.get('uz-neftchi')!,
-      utcDate: m3Date,
-      kickoffTashkent: formatTashkentTime(m3Date),
+      utcDate: m4Date,
+      kickoffTashkent: formatTashkentTime(m4Date),
       status: 'SCHEDULED',
       broadcaster: b1,
-      streamUrl: 'https://mtrk.uz/uz/tv/sport',
-      streamType: 'EXTERNAL',
+      streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm4-s1', name: "Sport TV O'zbekiston HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+        { id: 'm4-s2', name: "AS3 Sport HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
+      ],
       isPublished: true,
       isFeatured: false,
       venue: 'Markaziy Stadioni, Qarshi',
       competitionRound: '22-tur',
     });
 
-    // Upcoming Match 2: Arsenal vs Liverpool (Premyer-liga)
-    const m4Id = 'match-up-002';
-    const m4Date = new Date(now.getTime() + 4 * 60 * 60 * 1000).toISOString();
-    this.matches.set(m4Id, {
-      id: m4Id,
-      leagueId: 'league-epl',
-      leagueName: 'Angliya Premyer-ligasi',
-      homeTeam: this.teams.get('eu-arsenal')!,
-      awayTeam: this.teams.get('eu-liverpool')!,
-      utcDate: m4Date,
-      kickoffTashkent: formatTashkentTime(m4Date),
-      status: 'SCHEDULED',
-      broadcaster: b3,
-      streamUrl: 'https://setantasports.com',
-      streamType: 'EXTERNAL',
-      isPublished: true,
-      isFeatured: true,
-      venue: 'Emirates Stadium, London',
-      competitionRound: '29-tur',
-    });
-
-    // Upcoming Match 3: FC Barcelona vs Bayern Munich (Ertaga)
-    const m5Id = 'match-up-003';
-    const m5Date = new Date(now.getTime() + 26 * 60 * 60 * 1000).toISOString();
+    // MATCH 5: Bunyodkor Toshkent vs OKMK Olmaliq (Superliga - BUGUN 20:15)
+    const m5Id = 'match-today-002';
+    const m5Date = new Date(now.getTime() + 2.2 * 60 * 60 * 1000).toISOString();
     this.matches.set(m5Id, {
       id: m5Id,
-      leagueId: 'league-ucl',
-      leagueName: 'UEFA Chempionlar Ligasi',
-      homeTeam: this.teams.get('eu-barcelona')!,
-      awayTeam: this.teams.get('eu-bayern')!,
+      leagueId: 'league-uz-superliga',
+      leagueName: "O'zbekiston Superligasi",
+      homeTeam: this.teams.get('uz-bunyodkor')!,
+      awayTeam: this.teams.get('uz-agmk')!,
       utcDate: m5Date,
       kickoffTashkent: formatTashkentTime(m5Date),
       status: 'SCHEDULED',
       broadcaster: b2,
-      streamUrl: 'https://uzreport.news',
-      streamType: 'EXTERNAL',
-      isPublished: true,
-      isFeatured: false,
-      venue: 'Camp Nou, Barselona',
-      competitionRound: '1/4 Final',
-    });
-
-    // Finished Match: Bunyodkor vs Dinamo Samarqand
-    const m6Id = 'match-fin-001';
-    const m6Date = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-    this.matches.set(m6Id, {
-      id: m6Id,
-      leagueId: 'league-uz-superliga',
-      leagueName: "O'zbekiston Superligasi",
-      homeTeam: this.teams.get('uz-bunyodkor')!,
-      awayTeam: this.teams.get('uz-dinamo')!,
-      utcDate: m6Date,
-      kickoffTashkent: formatTashkentTime(m6Date),
-      status: 'FINISHED',
-      homeScore: 1,
-      awayScore: 2,
-      broadcaster: b1,
-      streamUrl: 'https://mtrk.uz/uz/tv/sport',
-      streamType: 'EXTERNAL',
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm5-s1', name: "UzReport TV Jonli Efir", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
+        { id: 'm5-s2', name: "RMTV Football HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p' },
+      ],
       isPublished: true,
       isFeatured: false,
       venue: 'Bunyodkor Stadioni, Toshkent',
+      competitionRound: '22-tur',
+    });
+
+    // MATCH 6: Arsenal FC vs Bayern Munich (UCL - BUGUN 23:45)
+    const m6Id = 'match-today-003';
+    const m6Date = new Date(now.getTime() + 5 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m6Id, {
+      id: m6Id,
+      leagueId: 'league-ucl',
+      leagueName: 'UEFA Chempionlar Ligasi',
+      homeTeam: this.teams.get('eu-arsenal')!,
+      awayTeam: this.teams.get('eu-bayern')!,
+      utcDate: m6Date,
+      kickoffTashkent: formatTashkentTime(m6Date),
+      status: 'SCHEDULED',
+      broadcaster: b1,
+      streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm6-s1', name: "Sport TV / UCL HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+        { id: 'm6-s2', name: "AS3 Sport Live", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live' },
+      ],
+      isPublished: true,
+      isFeatured: true,
+      venue: 'Emirates Stadium, London',
+      competitionRound: '1/4 Final',
+    });
+
+    // MATCH 7: FC Barcelona vs Sevilla FC (La Liga - BUGUN 23:00)
+    const m7Id = 'match-today-004';
+    const m7Date = new Date(now.getTime() + 4.5 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m7Id, {
+      id: m7Id,
+      leagueId: 'league-laliga',
+      leagueName: 'Ispaniya La Ligasi',
+      homeTeam: this.teams.get('eu-barcelona')!,
+      awayTeam: { id: 'eu-sevilla', name: 'Sevilla FC', shortName: 'Sevilla', tla: 'SEV', crestUrl: 'https://crests.football-data.org/559.png', leagueId: 'league-laliga', stadium: 'Ramón Sánchez-Pizjuán' },
+      utcDate: m7Date,
+      kickoffTashkent: formatTashkentTime(m7Date),
+      status: 'SCHEDULED',
+      broadcaster: b2,
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm7-s1', name: "UzReport TV / La Liga", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
+        { id: 'm7-s2', name: "FIFA+ Football", url: 'https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8', type: 'HLS', quality: '720p HD' },
+      ],
+      isPublished: true,
+      isFeatured: false,
+      venue: 'Camp Nou, Barselona',
+      competitionRound: '30-tur',
+    });
+
+    // MATCH 8: Andijon FK vs Dinamo Samarqand (Superliga - ERTAGA)
+    const m8Id = 'match-up-001';
+    const m8Date = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m8Id, {
+      id: m8Id,
+      leagueId: 'league-uz-superliga',
+      leagueName: "O'zbekiston Superligasi",
+      homeTeam: this.teams.get('uz-andijon')!,
+      awayTeam: this.teams.get('uz-dinamo')!,
+      utcDate: m8Date,
+      kickoffTashkent: formatTashkentTime(m8Date),
+      status: 'SCHEDULED',
+      broadcaster: b1,
+      streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm8-s1', name: "Sport TV O'zbekiston HD", url: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      ],
+      isPublished: true,
+      isFeatured: false,
+      venue: 'Bobur Arena, Andijon',
+      competitionRound: '22-tur',
+    });
+
+    // MATCH 9: Paris Saint-Germain vs Inter Milan (UCL - ERTAGA)
+    const m9Id = 'match-up-002';
+    const m9Date = new Date(now.getTime() + 28 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m9Id, {
+      id: m9Id,
+      leagueId: 'league-ucl',
+      leagueName: 'UEFA Chempionlar Ligasi',
+      homeTeam: this.teams.get('eu-psg')!,
+      awayTeam: { id: 'eu-inter', name: 'Inter Milan', shortName: 'Inter', tla: 'INT', crestUrl: 'https://crests.football-data.org/108.png', leagueId: 'league-seriea', stadium: 'San Siro, Milan' },
+      utcDate: m9Date,
+      kickoffTashkent: formatTashkentTime(m9Date),
+      status: 'SCHEDULED',
+      broadcaster: b3,
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      streamSources: [
+        { id: 'm9-s1', name: "Setanta Sports HD", url: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8', type: 'HLS', quality: '1080p Live', isDefault: true },
+      ],
+      isPublished: true,
+      isFeatured: true,
+      venue: 'Parc des Princes, Parij',
+      competitionRound: '1/4 Final',
+    });
+
+    // MATCH 10: So'g'diyona vs Dinamo Samarqand (Superliga - YAKUNLANGAN)
+    const m10Id = 'match-fin-001';
+    const m10Date = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m10Id, {
+      id: m10Id,
+      leagueId: 'league-uz-superliga',
+      leagueName: "O'zbekiston Superligasi",
+      homeTeam: { id: 'uz-sogdiana', name: 'So\'g\'diyona Jizzax', shortName: 'So\'g\'diyona', tla: 'SOG', crestUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/07/Uzbekistan_Super_League_logo.png/220px-Uzbekistan_Super_League_logo.png', leagueId: 'league-uz-superliga', stadium: 'So\'g\'diyona Stadioni' },
+      awayTeam: this.teams.get('uz-dinamo')!,
+      utcDate: m10Date,
+      kickoffTashkent: formatTashkentTime(m10Date),
+      status: 'FINISHED',
+      homeScore: 2,
+      awayScore: 1,
+      broadcaster: b1,
+      streamUrl: 'https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8',
+      streamType: 'HLS',
+      isPublished: true,
+      isFeatured: false,
+      venue: "Jizzax Markaziy Stadioni",
       competitionRound: '21-tur',
+    });
+
+    // MATCH 11: Juventus vs AC Milan (Serie A - YAKUNLANGAN)
+    const m11Id = 'match-fin-002';
+    const m11Date = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
+    this.matches.set(m11Id, {
+      id: m11Id,
+      leagueId: 'league-seriea',
+      leagueName: 'Italiya Serie A',
+      homeTeam: { id: 'eu-juve', name: 'Juventus', shortName: 'Juventus', tla: 'JUV', crestUrl: 'https://crests.football-data.org/109.png', leagueId: 'league-seriea', stadium: 'Allianz Stadium' },
+      awayTeam: { id: 'eu-milan', name: 'AC Milan', shortName: 'Milan', tla: 'MIL', crestUrl: 'https://crests.football-data.org/98.png', leagueId: 'league-seriea', stadium: 'San Siro' },
+      utcDate: m11Date,
+      kickoffTashkent: formatTashkentTime(m11Date),
+      status: 'FINISHED',
+      homeScore: 1,
+      awayScore: 0,
+      broadcaster: b3,
+      streamUrl: 'https://streamtv.as3sport.online:3394/hybrid/play.m3u8',
+      streamType: 'HLS',
+      isPublished: true,
+      isFeatured: false,
+      venue: 'Allianz Stadium, Turin',
+      competitionRound: '28-tur',
     });
 
     // 6. Initial Audit Log

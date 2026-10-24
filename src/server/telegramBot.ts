@@ -506,14 +506,11 @@ export class TelegramBotService {
           { text: '📅 Bugungi o‘yinlar', callback_data: 'today_matches' },
         ],
         [
-          { text: '📺 Telekanallar', callback_data: 'channels_list' },
+          { text: '🏆 Chempionatlar', callback_data: 'leagues' },
           { text: '📊 Natijalar', callback_data: 'recent_results' },
         ],
         [
-          { text: '🏆 Chempionatlar', callback_data: 'leagues' },
           { text: '👤 Profilim', callback_data: 'my_profile' },
-        ],
-        [
           { text: '🆘 Yordam', callback_data: 'help' },
         ],
       ],
@@ -528,11 +525,10 @@ export class TelegramBotService {
       `/start - Botni qayta ishga tushirish va asosiy menyu\n` +
       `/jonli - Hozir to'g'ridan-to'g'ri efirda ketayotgan bahslar\n` +
       `/bugun - Bugungi barcha futbol uchrashuvlari jadvali\n` +
-      `/kanallar - Jonli sport telekanallari ro'yxati\n` +
       `/natijalar - So'nggi yakunlangan o'yinlar hisoblari\n` +
       `/chempionatlar - Ligalar va turnir jadvallari\n` +
       `/admin - Boshqaruv paneli (faqat administratorlar uchun)\n\n` +
-      `💡 <i>Eslatma: Barcha o'yinlarning boshlanish vaqtlari Toshkent vaqti (UTC+5) bo'yicha ko'rsatiladi.</i>\n\n` +
+      `💡 <i>Ilovadagi istalgan o'yinni tanlaganingizda usha futbol translyatsiyasi srazi ochiladi!</i>\n\n` +
       `Murojaat uchun: @FutbolLiveUzSupport`;
   }
 

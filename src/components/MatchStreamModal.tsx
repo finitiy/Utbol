@@ -141,42 +141,28 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
             />
           </div>
 
-          {/* Stream Source Selector Tabs */}
-          <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800/80 space-y-2">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-300 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-rose-400" />
-                <span>Translyatsiya manbasini tanlang:</span>
+          {/* Direct Stream Live Indicator & Subtle Refresh Control */}
+          <div className="flex items-center justify-between text-xs px-1 text-slate-300">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-semibold text-emerald-400">Jonli Translyatsiya:</span>
+              <span className="text-slate-300 font-medium truncate">
+                {match.broadcaster?.name || "Rasmiy telekanal"}
               </span>
-              <span className="text-[11px] text-slate-500">
-                Agar bitta manba qotsa, boshqasiga o'ting
+              <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-400">
+                1080p FHD
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {sources.map((src) => {
-                const isSelected = activeSource.id === src.id;
-                return (
-                  <button
-                    key={src.id}
-                    onClick={() => setActiveSource(src)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
-                      isSelected
-                        ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30 font-semibold'
-                        : 'bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-800'
-                    }`}
-                  >
-                    <Radio className={`w-3 h-3 ${isSelected ? 'text-white animate-pulse' : 'text-slate-500'}`} />
-                    <span>{src.name}</span>
-                    {src.quality && (
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${isSelected ? 'bg-rose-700 text-rose-100' : 'bg-slate-800 text-slate-400'}`}>
-                        {src.quality}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            {sources.length > 1 && (
+              <button
+                onClick={handleSwitchToNextSource}
+                className="flex items-center gap-1.5 px-2.5 py-1 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/50 rounded-lg transition-colors text-[11px] font-medium"
+                title="Efir to'xtab qolsa boshqa zaxira oqimiga o'tish"
+              >
+                <span>Zaxira oqim 🔄</span>
+              </button>
+            )}
           </div>
 
           {/* Match Score Banner */}

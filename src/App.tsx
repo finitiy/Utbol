@@ -16,7 +16,6 @@ import { AuthModal } from './components/AuthModal.tsx';
 import { AdminDashboard } from './components/AdminDashboard.tsx';
 import { AndroidSetupModal } from './components/AndroidSetupModal.tsx';
 import { BottomTabBar } from './components/BottomTabBar.tsx';
-import { LiveChannelsView } from './components/LiveChannelsView.tsx';
 import { 
   Search, 
   Flame, 
@@ -172,6 +171,10 @@ export default function App() {
   // Filtered matches
   const filteredMatches = matches.filter((m) => {
     if (currentTab === 'live' && m.status !== 'IN_PLAY') return false;
+    if (currentTab === 'today') {
+      const isToday = m.status === 'IN_PLAY' || m.id.includes('today') || m.kickoffTashkent?.toLowerCase().includes('bugun');
+      if (!isToday && m.status !== 'IN_PLAY') return false;
+    }
     if (currentTab === 'favorites') {
       const favs = currentUser?.favoriteTeamIds || [];
       if (!favs.includes(m.homeTeam.id) && !favs.includes(m.awayTeam.id)) return false;
@@ -188,8 +191,14 @@ export default function App() {
     return true;
   });
 
-  const featuredMatch = matches.find((m) => m.isFeatured) || matches[0] || null;
+  const featuredMatch = matches.find((m) => m.isFeatured && m.status === 'IN_PLAY') || matches.find((m) => m.status === 'IN_PLAY') || matches[0] || null;
   const liveCount = matches.filter((m) => m.status === 'IN_PLAY').length;
+
+  // Grouped matches for clean, structured display
+  const liveMatches = filteredMatches.filter((m) => m.status === 'IN_PLAY');
+  const todayMatches = filteredMatches.filter((m) => m.status === 'SCHEDULED' && (m.id.includes('today') || m.kickoffTashkent?.toLowerCase().includes('bugun')));
+  const upcomingMatches = filteredMatches.filter((m) => m.status === 'SCHEDULED' && !m.id.includes('today') && !m.kickoffTashkent?.toLowerCase().includes('bugun'));
+  const finishedMatches = filteredMatches.filter((m) => m.status === 'FINISHED');
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col pb-20 md:pb-10">
@@ -212,8 +221,8 @@ export default function App() {
       <div className="bg-slate-900/60 border-b border-slate-800/80 px-4 py-2">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-xs text-slate-300">
           <div className="flex items-center gap-2 truncate">
-            <span className="font-semibold text-emerald-400">⚡ Rasmiy Efirlar:</span>
-            <span className="truncate">O'zbekiston Superligasi va Yevropa chempionatlari Toshkent vaqti (UTC+5) bilan</span>
+            <span className="font-semibold text-emerald-400">⚡ Rasmiy Jonli Efirlar:</span>
+            <span className="truncate">O'zbekiston Superligasi va Yevropa chempionatlari | Toshkent vaqti (UTC+5)</span>
           </div>
           <button
             onClick={() => setIsAndroidGuideOpen(true)}
@@ -230,12 +239,10 @@ export default function App() {
         {/* VIEW: STANDINGS */}
         {currentTab === 'standings' ? (
           <StandingsView leagues={leagues} />
-        ) : currentTab === 'channels' ? (
-          <LiveChannelsView />
         ) : (
           <>
             {/* Hero Spotlight (Rendered on Home or Live) */}
-            {currentTab === 'home' && (
+            {currentTab === 'home' && featuredMatch && (
               <HeroSpotlight
                 featuredMatch={featuredMatch}
                 onWatchMatch={(m) => setSelectedMatchForStream(m)}
@@ -252,6 +259,11 @@ export default function App() {
                       <>
                         <Tv className="w-6 h-6 text-rose-400" />
                         <span>Jonli Efirdagi O'yinlar</span>
+                      </>
+                    ) : currentTab === 'today' ? (
+                      <>
+                        <Calendar className="w-6 h-6 text-emerald-400" />
+                        <span>Bugungi Barcha O'yinlar</span>
                       </>
                     ) : currentTab === 'favorites' ? (
                       <>
@@ -355,7 +367,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Matches Grid */}
+            {/* Matches Grid - Grouped cleanly or targeted */}
             {loading ? (
               <div className="py-20 text-center text-slate-500 text-sm">
                 O'yinlar ma'lumotlari yuklanmoqda...
@@ -373,12 +385,138 @@ export default function App() {
                     setSelectedLeagueId('ALL');
                     setSearchQuery('');
                   }}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                 >
                   Barcha o'yinlarni ko'rsatish
                 </button>
               </div>
+            ) : statusFilter === 'ALL' && !searchQuery.trim() && currentTab === 'home' ? (
+              /* CLEAN GROUPED STRUCTURE: Live, Today, Upcoming, Finished */
+              <div className="space-y-10">
+                {/* 1. Live Now Section */}
+                {liveMatches.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-rose-900/40 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                          <span>Hozir Jonli Efirda</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                            {liveMatches.length} ta o'yin
+                          </span>
+                        </h3>
+                      </div>
+                      <span className="text-xs text-rose-400 font-medium hidden sm:inline">
+                        Istalgan o'yinni bosing — efir darhol boshlanadi
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {liveMatches.map((match) => (
+                        <MatchCard
+                          key={match.id}
+                          match={match}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          onToggleFavorite={handleToggleFavorite}
+                          onSelectMatch={(m) => setSelectedMatchForStream(m)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. Today's Scheduled Matches */}
+                {todayMatches.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-emerald-400" />
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                          <span>Bugungi Uchrashuvlar</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            {todayMatches.length} ta o'yin
+                          </span>
+                        </h3>
+                      </div>
+                      <span className="text-xs text-slate-400 hidden sm:inline">
+                        Boshlanish vaqtlari Toshkent vaqti (UTC+5) bo'yicha
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {todayMatches.map((match) => (
+                        <MatchCard
+                          key={match.id}
+                          match={match}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          onToggleFavorite={handleToggleFavorite}
+                          onSelectMatch={(m) => setSelectedMatchForStream(m)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Upcoming Matches */}
+                {upcomingMatches.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Flame className="w-5 h-5 text-sky-400" />
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                          <span>Yaqinlashayotgan Bahslar</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                            {upcomingMatches.length} ta o'yin
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {upcomingMatches.map((match) => (
+                        <MatchCard
+                          key={match.id}
+                          match={match}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          onToggleFavorite={handleToggleFavorite}
+                          onSelectMatch={(m) => setSelectedMatchForStream(m)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 4. Finished Match Results */}
+                {finishedMatches.length > 0 && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="w-5 h-5 text-amber-400" />
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                          <span>Yakunlangan Natijalar</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                            {finishedMatches.length} ta o'yin
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {finishedMatches.map((match) => (
+                        <MatchCard
+                          key={match.id}
+                          match={match}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          onToggleFavorite={handleToggleFavorite}
+                          onSelectMatch={(m) => setSelectedMatchForStream(m)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             ) : (
+              /* Specific Filter / Search Results Grid */
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredMatches.map((match) => (
                   <MatchCard
