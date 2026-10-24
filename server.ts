@@ -19,6 +19,7 @@ import {
 } from './src/server/db.ts';
 import { telegramBot, validateTelegramInitData } from './src/server/telegramBot.ts';
 import { footballProvider } from './src/server/footballData.ts';
+import { iptvService } from './src/server/iptvService.ts';
 import { Match, MatchStatus, StreamType, UserRole } from './src/types/index.ts';
 
 dotenv.config();
@@ -148,6 +149,35 @@ app.get('/api/stream-proxy', async (req: Request, res: Response) => {
     }
   } catch (err: any) {
     return res.status(502).send('Error proxying stream: ' + err.message);
+  }
+});
+
+// -------------------------------------------------------------
+// IPTV CHANNELS ENDPOINTS (Parsed and synced with iptv-org)
+// -------------------------------------------------------------
+app.get('/api/iptv/channels', async (req: Request, res: Response) => {
+  try {
+    const category = req.query.category as string | undefined;
+    const query = req.query.q as string | undefined;
+    const force = req.query.refresh === 'true';
+
+    if (force) {
+      await iptvService.refreshFeeds(true);
+    }
+
+    const data = iptvService.getChannels({ category, query });
+    return res.json(data);
+  } catch (err: any) {
+    return res.status(500).json({ error: 'Failed to fetch IPTV channels: ' + err.message });
+  }
+});
+
+app.post('/api/iptv/refresh', async (_req: Request, res: Response) => {
+  try {
+    await iptvService.refreshFeeds(true);
+    return res.json({ success: true, message: "IPTV kanallar muvaffaqiyatli yangilandi" });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
   }
 });
 

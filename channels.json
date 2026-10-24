@@ -1,38 +1,282 @@
 [
   {
-    "id": "sport-uz",
-    "name": "⚽️ Sport TV (MTRK)",
+    "id": "ch-sport-uz",
+    "name": "Sport TV (MTRK)",
+    "category": "Ommabop",
+    "url": "https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Sport_TV_Uzbekistan.png/320px-Sport_TV_Uzbekistan.png"
+  },
+  {
+    "id": "ch-uzreport",
+    "name": "UzReport TV HD",
+    "category": "Ommabop",
+    "url": "https://streamtv.as3sport.online:3394/hybrid/play.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/UZREPORT_TV_logo.png/320px-UZREPORT_TV_logo.png"
+  },
+  {
+    "id": "ch-futbol-tv",
+    "name": "Futbol TV",
+    "category": "Ommabop",
+    "url": "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Futbol_TV_logo.png/320px-Futbol_TV_logo.png"
+  },
+  {
+    "id": "ch-setanta-1",
+    "name": "Setanta Sports 1 HD",
+    "category": "Ommabop",
+    "url": "https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Setanta_Sports_Logo.png/320px-Setanta_Sports_Logo.png"
+  },
+  {
+    "id": "ch-setanta-2",
+    "name": "Setanta Sports 2 HD",
+    "category": "Ommabop",
+    "url": "https://streamtv.as3sport.online:3394/hybrid/play.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Setanta_Sports_Logo.png/320px-Setanta_Sports_Logo.png"
+  },
+  {
+    "id": "ch-fifa-plus",
+    "name": "FIFA+ Football Arena",
+    "category": "Ommabop",
+    "url": "https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8",
+    "logo": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=120&q=80"
+  },
+  {
+    "id": "iptv-o'zbekiston-1",
+    "name": "Aqlvoy",
     "category": "O'zbekiston",
-    "url": "https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8"
+    "url": "https://stream8.cinerama.uz/1205/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/ekF5cAi.png"
   },
   {
-    "id": "uzreport",
-    "name": "⚽️ UzReport TV HD",
+    "id": "iptv-o'zbekiston-2",
+    "name": "BIZ Cinema",
     "category": "O'zbekiston",
-    "url": "https://streamtv.as3sport.online:3394/hybrid/play.m3u8"
+    "url": "https://fl.biztv.media/cinema_720_EMfSyXgoRdiIHgldXTZICucKTIeCKO/index.m3u8",
+    "logo": "https://biztv.uz/static/media/biz-cinema.286b83dc.png"
   },
   {
-    "id": "futbol-tv",
-    "name": "⚽️ Futbol TV Jonli",
+    "id": "iptv-o'zbekiston-3",
+    "name": "BIZ Music",
     "category": "O'zbekiston",
-    "url": "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8"
+    "url": "https://fl.biztv.media/music_720_QAKpGmVUjaPApCNjpsgBxrdqNihAkl/index.m3u8",
+    "logo": "https://i.ibb.co/DfsCJwk/Uz-biz-music-5462.jpg"
   },
   {
-    "id": "setanta-1",
-    "name": "🏆 Setanta Sports 1 HD",
-    "category": "Xalqaro",
-    "url": "https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8"
+    "id": "iptv-o'zbekiston-4",
+    "name": "BIZ TV",
+    "category": "O'zbekiston",
+    "url": "https://fl.biztv.media/biz_tv_720_uni8jhub4h8fub4idejswh8dh3j94finbu4nidj39inwsj92in3d/index.m3u8",
+    "logo": "https://biztv.uz/static/media/logo.5f993187.png"
   },
   {
-    "id": "fifa-plus",
-    "name": "🌍 FIFA+ Football Live",
-    "category": "Xalqaro",
-    "url": "https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8"
+    "id": "iptv-o'zbekiston-5",
+    "name": "Bolajon",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1007/playlist.m3u8",
+    "logo": "https://i.imgur.com/s7o0ifu.png"
   },
   {
-    "id": "test-stream",
-    "name": "📡 Test Sport Stream (MUX)",
-    "category": "Test",
-    "url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+    "id": "iptv-o'zbekiston-6",
+    "name": "Cheksiz TV",
+    "category": "O'zbekiston",
+    "url": "https://fl.biztv.media/cheksiz_tv_480_unif7hujidth7f4du83jrhuid3k94j8hfj8d93eubych8eju93n4ubt/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/f7hHmmR.jpeg"
+  },
+  {
+    "id": "iptv-o'zbekiston-7",
+    "name": "Dasturxon TV",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1206/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/APM2ej5.jpeg"
+  },
+  {
+    "id": "iptv-o'zbekiston-8",
+    "name": "Dunyo bo'ylab",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1006/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/KArB5U6.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-9",
+    "name": "Farg'ona MTRK",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1458/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/RYjQOfo.jpeg"
+  },
+  {
+    "id": "iptv-o'zbekiston-10",
+    "name": "FTV (Uzbekistan)",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1018/playlist.m3u8",
+    "logo": "https://i.imgur.com/7lpISyN.jpg"
+  },
+  {
+    "id": "iptv-o'zbekiston-11",
+    "name": "Futbol TV",
+    "category": "O'zbekiston",
+    "url": "http://stream3.cinerama.uz/1010/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.ibb.co/h1gQSkbB/Futbol-TV.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-12",
+    "name": "Kinoteatr",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1009/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/emH1BgC.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-13",
+    "name": "Madaniyat va ma'rifat",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1005/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/eeNLXCP.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-14",
+    "name": "Mahalla",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1013/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/GtABiJI.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-15",
+    "name": "Makon TV (576i)",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1497/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/vCc0ED1.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-16",
+    "name": "Milliy",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1014/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/v4FBm26.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-17",
+    "name": "MiMi TV",
+    "category": "O'zbekiston",
+    "url": "https://fl.biztv.media/MiMiTV_720/playlist.m3u8",
+    "logo": "https://i.imgur.com/NmQglPa.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-18",
+    "name": "Muz TV Uzbekistan",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1063/tracks-v1a1/mono.m3u8",
+    "logo": "https://s8.vcdn.biz/static/f/6010782281/image.jpg"
+  },
+  {
+    "id": "iptv-o'zbekiston-19",
+    "name": "MY5",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1217/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/bjlzu5k.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-20",
+    "name": "Navo",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1008/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/7dZ64y9.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-21",
+    "name": "Navoiy MTRK (576i)",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1460/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/qa4VlYh.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-22",
+    "name": "Nurafshon TV",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1220/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/MMdNyBU.jpeg"
+  },
+  {
+    "id": "iptv-o'zbekiston-23",
+    "name": "O'zbekiston 24",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1011/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/VRFhKbw.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-24",
+    "name": "O'zbekiston",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1001/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/QUIIhTD.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-25",
+    "name": "O'zbekiston Tarixi",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1209/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/iTTd3Ir.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-26",
+    "name": "Qaraqalpaqstan",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1467/playlist.m3u8",
+    "logo": "https://i.imgur.com/G3qrUJh.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-27",
+    "name": "Renessans TV",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1221/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/cVlcqCX.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-28",
+    "name": "Sevimli TV",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1017/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/iMwzRlr.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-29",
+    "name": "Sport (Uzbekistan)",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1004/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/2WJE9CM.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-30",
+    "name": "Taraqqiyot TV",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1204/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/V3rtPEl.jpg"
+  },
+  {
+    "id": "iptv-o'zbekiston-31",
+    "name": "Toshkent",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1003/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/Z9R4nZg.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-32",
+    "name": "UzReport TV",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1015/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/Bch2RHc.jpg"
+  },
+  {
+    "id": "iptv-o'zbekiston-33",
+    "name": "Yoshlar",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1002/tracks-v1a1/playlist.m3u8",
+    "logo": "https://i.imgur.com/s4xfUSx.png"
+  },
+  {
+    "id": "iptv-o'zbekiston-34",
+    "name": "Zo'r TV",
+    "category": "O'zbekiston",
+    "url": "https://stream8.cinerama.uz/1016/tracks-v1a1/mono.m3u8",
+    "logo": "https://i.imgur.com/NuzyhVM.png"
   }
 ]

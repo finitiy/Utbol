@@ -15,17 +15,21 @@ import {
   ExternalLink, 
   Share2, 
   Plus, 
-  AlertCircle 
+  AlertCircle,
+  RefreshCw 
 } from 'lucide-react';
 
 export interface TvChannel {
   id: string;
   name: string;
+  logo?: string;
   logoUrl?: string;
-  category: 'O\'zbekiston' | 'Xalqaro' | 'Sport' | 'Boshqa';
-  description: string;
+  category: "O'zbekiston" | "Rossiya" | "Xalqaro" | "Ommabop" | "Sport" | "Boshqa" | string;
+  groupTitle?: string;
+  description?: string;
   url: string;
-  quality: string;
+  quality?: string;
+  country?: string;
   isPopular?: boolean;
 }
 
@@ -101,41 +105,51 @@ export const TvChannelsView: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   // Custom Stream URL test input
   const [customUrl, setCustomUrl] = useState<string>('');
   const [customName, setCustomName] = useState<string>('');
   const [showAddCustom, setShowAddCustom] = useState<boolean>(false);
 
-  // Load from /channels.json if available
-  useEffect(() => {
-    fetch('/channels.json')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          const merged: TvChannel[] = data.map((item: any, idx: number) => ({
-            id: item.id || `ch-json-${idx}`,
-            name: item.name || 'Telekanal',
-            category: (item.category as any) || "O'zbekiston",
-            description: item.description || "Sport va futbol musobaqalarining rasmiy jonli efiri",
-            url: item.url,
-            quality: item.quality || "1080p HD",
-            isPopular: idx < 3,
-          }));
-          setChannels(merged);
-          setSelectedChannel(merged[0]);
+  const loadIptvChannels = async (force = false) => {
+    if (force) setIsRefreshing(true);
+    else setLoading(true);
+
+    try {
+      const url = force ? '/api/iptv/channels?refresh=true' : '/api/iptv/channels';
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.channels) && data.channels.length > 0) {
+          setChannels(data.channels);
+          if (force || !selectedChannel) {
+            setSelectedChannel(data.channels[0]);
+          }
         }
-      })
-      .catch(() => {
-        // Fallback to default channels list
-      });
+      }
+    } catch (err) {
+      console.warn('Failed to load /api/iptv/channels, using fallback list:', err);
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    loadIptvChannels(false);
   }, []);
 
   const filteredChannels = channels.filter((ch) => {
     if (selectedCategory !== 'ALL' && ch.category !== selectedCategory) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      return ch.name.toLowerCase().includes(q) || ch.description.toLowerCase().includes(q);
+      return (
+        ch.name.toLowerCase().includes(q) ||
+        (ch.groupTitle && ch.groupTitle.toLowerCase().includes(q)) ||
+        (ch.description && ch.description.toLowerCase().includes(q))
+      );
     }
     return true;
   });
@@ -202,11 +216,21 @@ export const TvChannelsView: React.FC = () => {
 
         <div className="flex items-center gap-2">
           <button
+            onClick={() => loadIptvChannels(true)}
+            disabled={isRefreshing}
+            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-300 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-60"
+            title="IPTV pleylistlarini iptv-org manbasidan yangilash"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-emerald-400 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">{isRefreshing ? "Yangilanmoqda..." : "Yangilash"}</span>
+          </button>
+
+          <button
             onClick={() => setShowAddCustom(!showAddCustom)}
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-emerald-300 bg-emerald-950/60 border border-emerald-800/80 rounded-xl hover:bg-emerald-900/60 transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Havola (.m3u8) qo'shish</span>
+            <span>Havola qo'shish</span>
           </button>
 
           <button
@@ -288,8 +312,19 @@ export const TvChannelsView: React.FC = () => {
         {/* Current Playing Channel Bar */}
         <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-              <Radio className="w-5 h-5 animate-pulse" />
+            <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 p-1.5 flex items-center justify-center shrink-0">
+              {selectedChannel.logo ? (
+                <img
+                  src={selectedChannel.logo}
+                  alt={selectedChannel.name}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
+              ) : (
+                <Radio className="w-5 h-5 text-emerald-400 animate-pulse" />
+              )}
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
@@ -298,13 +333,16 @@ export const TvChannelsView: React.FC = () => {
                   JONLI EFIR
                 </span>
               </div>
-              <p className="text-xs text-slate-400 truncate mt-0.5">{selectedChannel.description}</p>
+              <p className="text-xs text-slate-400 truncate mt-0.5">
+                {selectedChannel.groupTitle ? `${selectedChannel.groupTitle} · ` : ''}
+                {selectedChannel.description || "Sport va futbol musobaqalari translyatsiyasi"}
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
             <span className="px-2.5 py-1 text-xs font-mono font-bold bg-slate-950 text-emerald-400 border border-slate-800 rounded-lg">
-              {selectedChannel.quality}
+              {selectedChannel.quality || "1080p HD"}
             </span>
             <a
               href={`/player.html?url=${encodeURIComponent(selectedChannel.url)}&name=${encodeURIComponent(selectedChannel.name)}`}
@@ -324,10 +362,11 @@ export const TvChannelsView: React.FC = () => {
         {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
           {[
-            { id: 'ALL', label: 'Barcha Kanallar' },
-            { id: "O'zbekiston", label: "🇺🇿 O'zbekiston" },
-            { id: 'Xalqaro', label: '🌍 Xalqaro Sport' },
-            { id: 'Sport', label: '⚽️ Futbol & Arena' },
+            { id: 'ALL', label: `Barchasi (${channels.length})` },
+            { id: 'Ommabop', label: '🌟 Asosiy Sport' },
+            { id: "O'zbekiston", label: `🇺🇿 O'zbekiston (${channels.filter(c => c.category === "O'zbekiston").length})` },
+            { id: 'Rossiya', label: `🇷🇺 Rossiya (${channels.filter(c => c.category === "Rossiya").length})` },
+            { id: 'Xalqaro', label: `🌍 Xalqaro Sport (${channels.filter(c => c.category === "Xalqaro").length})` },
           ].map((cat) => (
             <button
               key={cat.id}
@@ -357,66 +396,91 @@ export const TvChannelsView: React.FC = () => {
       </div>
 
       {/* 5. IPTV Channels Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredChannels.map((channel) => {
-          const isCurrent = selectedChannel.id === channel.id;
-          return (
-            <div
-              key={channel.id}
-              onClick={() => handlePlayChannel(channel)}
-              className={`group relative p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-4 ${
-                isCurrent
-                  ? 'bg-slate-900 border-emerald-500/60 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/40'
-                  : 'bg-slate-900/80 hover:bg-slate-850 border-slate-800 hover:border-slate-700'
-              }`}
-            >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 border ${
-                      isCurrent
-                        ? 'bg-emerald-500 text-slate-950 border-emerald-400'
-                        : 'bg-slate-800 text-slate-300 border-slate-700/60'
-                    }`}>
-                      <Tv className="w-4 h-4" />
+      {loading ? (
+        <div className="py-16 text-center text-slate-400 text-sm">
+          IPTV pleylistlari yuklanmoqda...
+        </div>
+      ) : filteredChannels.length === 0 ? (
+        <div className="py-16 text-center bg-slate-900/40 rounded-2xl border border-slate-800 p-8 space-y-2">
+          <Tv className="w-10 h-10 text-slate-600 mx-auto" />
+          <h4 className="text-sm font-bold text-white">Hech qanday kanal topilmadi</h4>
+          <p className="text-xs text-slate-400">Qidiruv so'zini o'zgartiring yoki filtrlarni qayta o'rnating.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredChannels.map((channel) => {
+            const isCurrent = selectedChannel.id === channel.id;
+            return (
+              <div
+                key={channel.id}
+                onClick={() => handlePlayChannel(channel)}
+                className={`group relative p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-4 ${
+                  isCurrent
+                    ? 'bg-slate-900 border-emerald-500/60 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/40'
+                    : 'bg-slate-900/80 hover:bg-slate-850 border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center p-1 font-bold text-sm shrink-0 border ${
+                        isCurrent
+                          ? 'bg-slate-800 border-emerald-400'
+                          : 'bg-slate-800 text-slate-300 border-slate-700/60'
+                      }`}>
+                        {channel.logo ? (
+                          <img
+                            src={channel.logo}
+                            alt={channel.name}
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              (e.target as HTMLElement).style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <Tv className="w-4 h-4 text-emerald-400" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-sm font-bold text-white truncate group-hover:text-emerald-300 transition-colors">
+                          {channel.name}
+                        </h4>
+                        <span className="text-[11px] text-slate-400">
+                          {channel.groupTitle || channel.category}
+                        </span>
+                      </div>
                     </div>
-                    <div className="min-w-0">
-                      <h4 className="text-sm font-bold text-white truncate group-hover:text-emerald-300 transition-colors">
-                        {channel.name}
-                      </h4>
-                      <span className="text-[11px] text-slate-400">{channel.category}</span>
-                    </div>
+
+                    <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-slate-950 text-slate-300 border border-slate-800 rounded">
+                      {channel.quality || "HD"}
+                    </span>
                   </div>
 
-                  <span className="px-2 py-0.5 text-[10px] font-mono font-semibold bg-slate-950 text-slate-300 border border-slate-800 rounded">
-                    {channel.quality}
-                  </span>
+                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                    {channel.description || `${channel.name} telekanalining to'g'ridan-to'g'ri jonli efir oqimi.`}
+                  </p>
                 </div>
 
-                <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                  {channel.description}
-                </p>
-              </div>
+                <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                  <div className="flex items-center gap-1.5 text-[11px]">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-emerald-400 font-semibold">Faol oqim</span>
+                  </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
-                <div className="flex items-center gap-1.5 text-[11px]">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-emerald-400 font-semibold">Oqim faol</span>
-                </div>
-
-                <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                  isCurrent
-                    ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                    : 'bg-slate-800 text-slate-300 group-hover:bg-emerald-500 group-hover:text-slate-950'
-                }`}>
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>{isCurrent ? "O'ynalmoqda" : "Efirni ko'rish"}</span>
+                  <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                    isCurrent
+                      ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                      : 'bg-slate-800 text-slate-300 group-hover:bg-emerald-500 group-hover:text-slate-950'
+                  }`}>
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>{isCurrent ? "O'ynalmoqda" : "Efirni ko'rish"}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
