@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sport-uz",
+    "name": "⚽️ Sport TV (MTRK)",
+    "category": "O'zbekiston",
+    "url": "https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8"
+  },
+  {
+    "id": "uzreport",
+    "name": "⚽️ UzReport TV HD",
+    "category": "O'zbekiston",
+    "url": "https://streamtv.as3sport.online:3394/hybrid/play.m3u8"
+  },
+  {
+    "id": "futbol-tv",
+    "name": "⚽️ Futbol TV Jonli",
+    "category": "O'zbekiston",
+    "url": "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8"
+  },
+  {
+    "id": "setanta-1",
+    "name": "🏆 Setanta Sports 1 HD",
+    "category": "Xalqaro",
+    "url": "https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8"
+  },
+  {
+    "id": "fifa-plus",
+    "name": "🌍 FIFA+ Football Live",
+    "category": "Xalqaro",
+    "url": "https://jmp2.uk/plu-660c29b5aec9680008f5b4a4.m3u8"
+  },
+  {
+    "id": "test-stream",
+    "name": "📡 Test Sport Stream (MUX)",
+    "category": "Test",
+    "url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+  }
+]
