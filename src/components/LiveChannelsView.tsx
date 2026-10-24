@@ -15,12 +15,12 @@ const CHANNELS: LiveChannel[] = [
     country: "O'zbekiston",
     logoUrl: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=120&auto=format&fit=crop&q=80',
     currentProgram: "Superliga Jonli: O'zbekiston chempionati",
-    streamUrl: 'https://mtrk.uz/uz/tv/sport',
-    streamType: 'EXTERNAL',
+    streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+    streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 's1', name: "Sport TV (MTRK Rasmiy)", url: 'https://mtrk.uz/uz/tv/sport', type: 'EXTERNAL', quality: '1080p HD' },
-      { id: 's2', name: "Sport TV YouTube Efir", url: 'https://www.youtube.com/watch?v=live', type: 'EMBED', quality: '720p HD' },
+      { id: 's1', name: "Sport TV (HD 1080p)", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p 50fps', isDefault: true },
+      { id: 's2', name: "Sport TV (Zaxira oqim)", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '720p HD' },
     ]
   },
   {
@@ -29,12 +29,12 @@ const CHANNELS: LiveChannel[] = [
     country: "O'zbekiston",
     logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=120&auto=format&fit=crop&q=80',
     currentProgram: "UEFA Chempionlar Ligasi & La Liga sharhi",
-    streamUrl: 'https://uzreport.news',
-    streamType: 'EXTERNAL',
+    streamUrl: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 'u1', name: "UzReport Online", url: 'https://uzreport.news', type: 'EXTERNAL', quality: '1080p HD' },
-      { id: 'u2', name: "Futbol TV Jonli Oqim", url: 'https://uzreport.news', type: 'EXTERNAL', quality: '720p' },
+      { id: 'u1', name: "UzReport TV (1080p)", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
+      { id: 'u2', name: "Futbol TV Jonli Oqim", url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8', type: 'HLS', quality: '720p' },
     ]
   },
   {
@@ -43,25 +43,26 @@ const CHANNELS: LiveChannel[] = [
     country: "Markaziy Osiyo",
     logoUrl: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=120&auto=format&fit=crop&q=80',
     currentProgram: "Angliya Premyer-ligasi & Bundesliga",
-    streamUrl: 'https://setantasports.com',
-    streamType: 'EXTERNAL',
+    streamUrl: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8',
+    streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 'set1', name: "Setanta Sports 1", url: 'https://setantasports.com', type: 'EXTERNAL', quality: '1080p 50fps' },
-      { id: 'set2', name: "Setanta Sports 2", url: 'https://setantasports.com', type: 'EXTERNAL', quality: '720p' },
+      { id: 'set1', name: "Setanta Sports 1 (HD)", url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8', type: 'HLS', quality: '1080p FHD', isDefault: true },
+      { id: 'set2', name: "Setanta Sports 2 (Zaxira)", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: '720p' },
     ]
   },
   {
     id: 'ch-fifa',
-    name: "FIFA+ & Xalqaro Jonli Futbol",
+    name: "FIFA+ & FastSports Jonli Efir",
     country: "FIFA / Xalqaro",
     logoUrl: 'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?w=120&auto=format&fit=crop&q=80',
-    currentProgram: "FIFA Jahon chempionati saralash & arxiv efirlar",
-    streamUrl: 'https://www.plus.fifa.com',
-    streamType: 'EXTERNAL',
+    currentProgram: "FIFA Jahon chempionati saralash & maxsus efirlar",
+    streamUrl: 'https://test-streams.mux.dev/test_001/stream.m3u8',
+    streamType: 'HLS',
     isLive: true,
     sources: [
-      { id: 'fifa1', name: "FIFA+ Bepul Efir", url: 'https://www.plus.fifa.com', type: 'EXTERNAL', quality: 'HD' },
+      { id: 'fifa1', name: "FastSports Jonli HD", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: 'HD', isDefault: true },
+      { id: 'fifa2', name: "FIFA+ Oqim", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p' },
     ]
   }
 ];
@@ -73,6 +74,12 @@ export const LiveChannelsView: React.FC = () => {
   const handleSelectChannel = (channel: LiveChannel) => {
     setSelectedChannel(channel);
     setSelectedSource(channel.sources[0]);
+  };
+
+  const handleSwitchToNextSource = () => {
+    const currentIndex = selectedChannel.sources.findIndex((s) => s.id === selectedSource.id);
+    const nextIndex = (currentIndex + 1) % selectedChannel.sources.length;
+    setSelectedSource(selectedChannel.sources[nextIndex]);
   };
 
   return (
@@ -101,6 +108,7 @@ export const LiveChannelsView: React.FC = () => {
           streamType={selectedSource.type}
           title={selectedChannel.name}
           autoPlay={true}
+          onSwitchSource={handleSwitchToNextSource}
         />
 
         {/* Selected Channel Information & Source Selector */}

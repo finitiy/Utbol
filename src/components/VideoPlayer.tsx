@@ -13,10 +13,10 @@ import {
   Maximize, 
   Minimize, 
   RotateCcw, 
-  ExternalLink, 
   AlertCircle,
   Radio,
-  Tv
+  Layers,
+  Sparkles
 } from 'lucide-react';
 import { StreamType } from '../types/index.ts';
 
@@ -26,6 +26,7 @@ interface VideoPlayerProps {
   title: string;
   poster?: string;
   autoPlay?: boolean;
+  onSwitchSource?: () => void;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -34,6 +35,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   title,
   poster,
   autoPlay = true,
+  onSwitchSource,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -61,14 +63,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const isYouTube = Boolean(getYouTubeEmbedUrl(streamUrl));
   const youtubeUrl = getYouTubeEmbedUrl(streamUrl);
-  const isHls = streamType === 'HLS' || streamUrl.endsWith('.m3u8') || streamUrl.includes('.m3u8');
-  const isEmbed = streamType === 'EMBED' || isYouTube;
+  const isMp4 = streamUrl.endsWith('.mp4') || streamUrl.includes('.mp4');
+  const isHls = !isMp4 && !isYouTube && (streamType === 'HLS' || streamUrl.endsWith('.m3u8') || streamUrl.includes('.m3u8'));
+  const isEmbed = (streamType === 'EMBED' || isYouTube) && !isHls && !isMp4;
 
   useEffect(() => {
     setError(null);
     setLoading(true);
 
-    if (isEmbed || !isHls) {
+    if (isEmbed) {
       setLoading(false);
       return;
     }
@@ -76,12 +79,34 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const video = videoRef.current;
     if (!video) return;
 
-    // Clean previous HLS instance
+    // Clean previous HLS instance if any
     if (hlsRef.current) {
       hlsRef.current.destroy();
       hlsRef.current = null;
     }
 
+    // 1. Direct MP4 or non-HLS video
+    if (isMp4) {
+      video.src = streamUrl;
+      video.load();
+      video.onloadeddata = () => {
+        setLoading(false);
+        if (autoPlay) {
+          video.play().then(() => setIsPlaying(true)).catch(() => {
+            video.muted = true;
+            setIsMuted(true);
+            video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+          });
+        }
+      };
+      video.onerror = () => {
+        setError("Ushbu video oqimi yuklanmadi. Boshqa manbani tanlang.");
+        setLoading(false);
+      };
+      return;
+    }
+
+    // 2. HLS video stream
     if (Hls.isSupported()) {
       const hls = new Hls({
         enableWorker: true,
@@ -97,7 +122,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         setLoading(false);
         if (autoPlay) {
           video.play().then(() => setIsPlaying(true)).catch(() => {
-            // Autoplay with sound might be blocked, retry muted
             video.muted = true;
             setIsMuted(true);
             video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
@@ -110,7 +134,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
-              setError("Jonli efir tarmog'i bilan aloqa uzildi. Manba serveri javob bermayapti.");
+              setError("Ushbu oqimda uzilish bo'ldi. Boshqa manbaga o'ting.");
               hls.startLoad();
               break;
             case Hls.ErrorTypes.MEDIA_ERROR:
@@ -119,7 +143,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
               break;
             default:
               hls.destroy();
-              setError("Ushbu efir manbasi ayni damda faol emas yoki cheklangan.");
+              setError("Ushbu efir manbasi ayni damda faol emas. Boshqa manbani tanlang.");
               break;
           }
           setLoading(false);
@@ -135,11 +159,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         }
       });
       video.addEventListener('error', () => {
-        setError("Ushbu efir manbasi ochilmadi.");
+        setError("Ushbu efir manbasi ochilmadi. Boshqa manbaga o'ting.");
         setLoading(false);
       });
     } else {
-      setError("Brauzeringiz HLS video oqimini qo'llab-quvvatlamaydi.");
+      setError("Brauzeringiz ushbu video formatini to'liq qo'llab-quvvatlamaydi.");
       setLoading(false);
     }
 
@@ -149,7 +173,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         hlsRef.current = null;
       }
     };
-  }, [streamUrl, streamType, autoPlay]);
+  }, [streamUrl, streamType, autoPlay, isHls, isMp4, isEmbed]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -186,6 +210,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (hlsRef.current) {
       hlsRef.current.loadSource(streamUrl);
       hlsRef.current.startLoad();
+    } else if (videoRef.current) {
+      videoRef.current.load();
     }
   };
 
@@ -245,31 +271,32 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </div>
           )}
 
-          {/* Error & Fallback View */}
+          {/* Error & Source Switch View (NO 'Brauzerda ochish' button) */}
           {error && (
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 bg-slate-950/95 text-center space-y-3">
               <AlertCircle className="w-10 h-10 text-amber-400" />
               <p className="text-sm font-semibold text-white">{error}</p>
               <p className="text-xs text-slate-400 max-w-md">
-                Efir oqimida uzilish bo'lishi mumkin. Qayta urinib ko'ring yoki boshqa rasmiy manbani tanlang.
+                Efir oqimida uzilish bo'lishi mumkin. Quyidagi tugmalar orqali qayta urinib ko'ring yoki boshqa manbaga o'ting.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                 <button
                   onClick={handleRetry}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors"
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>Qayta urinish</span>
                 </button>
-                <a
-                  href={streamUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-lg shadow-rose-600/20"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Brauzerda to'g'ridan-to'g'ri ochish</span>
-                </a>
+
+                {onSwitchSource && (
+                  <button
+                    onClick={onSwitchSource}
+                    className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-lg shadow-rose-600/20 cursor-pointer"
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>Boshqa manbaga o'tish</span>
+                  </button>
+                )}
               </div>
             </div>
           )}

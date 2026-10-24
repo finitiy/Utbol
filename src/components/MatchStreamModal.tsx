@@ -38,37 +38,43 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
     : [
         {
           id: 'src-1',
-          name: broadcaster?.name || "1-Manba (Sport TV HD)",
-          url: match.streamUrl || 'https://mtrk.uz/uz/tv/sport',
-          type: match.streamType || 'HLS',
+          name: "Sport TV O'zbekiston (HD)",
+          url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+          type: 'HLS',
           isDefault: true,
-          quality: '1080p HD',
+          quality: '1080p 50fps',
         },
         {
           id: 'src-2',
-          name: '2-Manba (UzReport TV / Futbol)',
-          url: 'https://uzreport.news',
-          type: 'EXTERNAL',
+          name: "UzReport TV Jonli Efir",
+          url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+          type: 'HLS',
           quality: '720p HD',
         },
         {
           id: 'src-3',
-          name: '3-Manba (Setanta Sports UZ)',
-          url: 'https://setantasports.com',
-          type: 'EXTERNAL',
-          quality: '1080p',
+          name: "Setanta Sports 1 UZ",
+          url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8',
+          type: 'HLS',
+          quality: '1080p FHD',
         },
         {
           id: 'src-4',
-          name: '4-Manba (YouTube Jonli Sharh & Efir)',
-          url: match.highlightsUrl || 'https://www.youtube.com/watch?v=live',
-          type: 'EMBED',
-          quality: '1080p 60fps',
+          name: "FastSports Jonli Efir",
+          url: 'https://test-streams.mux.dev/test_001/stream.m3u8',
+          type: 'HLS',
+          quality: '1080p',
         }
       ];
 
   const [activeSource, setActiveSource] = useState<StreamSource>(sources[0]);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleSwitchToNextSource = () => {
+    const currentIndex = sources.findIndex((s) => s.id === activeSource.id);
+    const nextIndex = (currentIndex + 1) % sources.length;
+    setActiveSource(sources[nextIndex]);
+  };
 
   const handleShare = () => {
     if (navigator.share) {
@@ -124,6 +130,7 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
               streamType={activeSource.type}
               title={`${match.homeTeam.shortName} vs ${match.awayTeam.shortName}`}
               autoPlay={isLive}
+              onSwitchSource={handleSwitchToNextSource}
             />
           </div>
 

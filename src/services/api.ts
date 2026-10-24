@@ -210,24 +210,31 @@ export function generateStreamSources(_matchTitle: string): StreamSource[] {
     {
       id: 'stream-sport-uz',
       name: "Sport TV (O'zbekiston)",
-      quality: '1080p FHD',
-      url: 'https://mtrk.uz/uz/tv/sport/',
-      type: 'EXTERNAL' as StreamType,
+      quality: '1080p 50fps',
+      url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      type: 'HLS' as StreamType,
       isDefault: true,
+    },
+    {
+      id: 'stream-uzreport',
+      name: "UzReport TV Jonli Efir",
+      quality: '720p HD',
+      url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+      type: 'HLS' as StreamType,
+    },
+    {
+      id: 'stream-setanta',
+      name: 'Setanta Sports 1 UZ',
+      quality: '1080p FHD',
+      url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8',
+      type: 'HLS' as StreamType,
     },
     {
       id: 'stream-fast-sports',
       name: 'Fast Sports HD',
       quality: '1080p 60fps',
-      url: 'https://fastsports.tv/live',
-      type: 'EXTERNAL' as StreamType,
-    },
-    {
-      id: 'stream-setanta',
-      name: 'Setanta Sports 1',
-      quality: '720p HD',
-      url: 'https://setantasports.com',
-      type: 'EXTERNAL' as StreamType,
+      url: 'https://test-streams.mux.dev/test_001/stream.m3u8',
+      type: 'HLS' as StreamType,
     },
   ];
 }

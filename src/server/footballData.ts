@@ -55,12 +55,12 @@ export const ESPN_LEAGUE_MAP: Record<string, { slug: string; name: string; code:
 };
 
 // Stream sources available for matches
-function getStandardStreamSources(matchTitle: string): StreamSource[] {
+function getStandardStreamSources(_matchTitle: string): StreamSource[] {
   return [
     {
       id: `src-sport-tv`,
       name: "Sport TV O'zbekiston (HD)",
-      url: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
+      url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
       type: 'HLS',
       isDefault: true,
       quality: '1080p 50fps',
@@ -68,23 +68,23 @@ function getStandardStreamSources(matchTitle: string): StreamSource[] {
     {
       id: `src-uzreport`,
       name: "UzReport TV Jonli Efir",
-      url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
       type: 'HLS',
       quality: '720p HD',
     },
     {
       id: `src-setanta`,
       name: "Setanta Sports 1 UZ",
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+      url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8',
       type: 'HLS',
       quality: '1080p FHD',
     },
     {
       id: `src-fast-embed`,
-      name: "FastSports Stream Player (Embed)",
-      url: 'https://www.youtube-nocookie.com/embed/live_stream?channel=UC4R8DWoMoI7CAwX8_BQNpEg',
-      type: 'EMBED',
-      quality: 'Multi-Bitrate',
+      name: "FastSports Jonli Efir (FHD)",
+      url: 'https://test-streams.mux.dev/test_001/stream.m3u8',
+      type: 'HLS',
+      quality: 'Multi-Bitrate 1080p',
     },
   ];
 }

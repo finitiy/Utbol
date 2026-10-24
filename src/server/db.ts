@@ -252,12 +252,13 @@ class DatabaseStore {
       homeScore: 2,
       awayScore: 1,
       broadcaster: b1,
-      streamUrl: 'https://mtrk.uz/uz/tv/sport',
-      streamType: 'EXTERNAL',
+      streamUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+      streamType: 'HLS',
       streamSources: [
-        { id: 'm1-s1', name: "Sport TV (MTRK O'zbekiston)", url: 'https://mtrk.uz/uz/tv/sport', type: 'EXTERNAL', quality: '1080p HD' },
-        { id: 'm1-s2', name: "UzReport TV / Futbol", url: 'https://uzreport.news', type: 'EXTERNAL', quality: '720p HD' },
-        { id: 'm1-s3', name: "YouTube Jonli Sharh", url: 'https://www.youtube.com/watch?v=live', type: 'EMBED', quality: '1080p' }
+        { id: 'm1-s1', name: "Sport TV (MTRK O'zbekiston)", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
+        { id: 'm1-s2', name: "UzReport TV / Futbol", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '720p HD' },
+        { id: 'm1-s3', name: "Setanta Sports 1 UZ", url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8', type: 'HLS', quality: '1080p FHD' },
+        { id: 'm1-s4', name: "FastSports Jonli Efir", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: '1080p' }
       ],
       isPublished: true,
       isFeatured: true,
@@ -281,12 +282,13 @@ class DatabaseStore {
       homeScore: 1,
       awayScore: 1,
       broadcaster: b2,
-      streamUrl: 'https://uzreport.news',
-      streamType: 'EXTERNAL',
+      streamUrl: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+      streamType: 'HLS',
       streamSources: [
-        { id: 'm2-s1', name: "UzReport TV Jonli Efir", url: 'https://uzreport.news', type: 'EXTERNAL', quality: '1080p HD' },
-        { id: 'm2-s2', name: "Setanta Sports O'zbekiston", url: 'https://setantasports.com', type: 'EXTERNAL', quality: '1080p 50fps' },
-        { id: 'm2-s3', name: "UEFA Champions League HD", url: 'https://www.uefa.com', type: 'EXTERNAL', quality: 'HD' }
+        { id: 'm2-s1', name: "UzReport TV Jonli Efir", url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8', type: 'HLS', quality: '1080p HD', isDefault: true },
+        { id: 'm2-s2', name: "Sport TV (O'zbekiston)", url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', type: 'HLS', quality: '1080p 50fps' },
+        { id: 'm2-s3', name: "Setanta Sports 1 UZ", url: 'https://assets.afcdn.com/video49/20210722/v_645516.m3u8', type: 'HLS', quality: '1080p FHD' },
+        { id: 'm2-s4', name: "FastSports Jonli Efir", url: 'https://test-streams.mux.dev/test_001/stream.m3u8', type: 'HLS', quality: '720p' }
       ],
       isPublished: true,
       isFeatured: true,
