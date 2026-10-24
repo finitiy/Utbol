@@ -23,6 +23,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   const isLive = match.status === 'IN_PLAY';
   const isFinished = match.status === 'FINISHED';
 
+  const defaultCrest = 'https://a.espncdn.com/i/teamlogos/soccer/500/default-team-logo.png';
+  const homeTeam = match.homeTeam || { id: '', name: 'Mezbon', shortName: 'Mezbon', crestUrl: defaultCrest, tla: 'HOM', leagueId: '' };
+  const awayTeam = match.awayTeam || { id: '', name: 'Mehmon', shortName: 'Mehmon', crestUrl: defaultCrest, tla: 'AWY', leagueId: '' };
+
   return (
     <div
       onClick={() => onSelectMatch(match)}
@@ -56,7 +60,9 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onToggleFavorite(match.homeTeam.id);
+              if (homeTeam.id) {
+                onToggleFavorite(homeTeam.id);
+              }
             }}
             className="p-1 text-slate-500 hover:text-amber-400 transition-colors"
             title="Sevimli jamoalarga qo'shish"
@@ -73,16 +79,16 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-7 h-7 rounded-md bg-slate-800 border border-slate-700/60 p-1 flex items-center justify-center shrink-0">
               <img
-                src={match.homeTeam.crestUrl}
-                alt={match.homeTeam.name}
+                src={homeTeam.crestUrl || defaultCrest}
+                alt={homeTeam.name}
                 className="w-full h-full object-contain"
                 onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
+                  (e.target as HTMLImageElement).src = defaultCrest;
                 }}
               />
             </div>
             <span className="text-sm font-semibold text-white truncate group-hover:text-emerald-300 transition-colors">
-              {match.homeTeam.name}
+              {homeTeam.name}
             </span>
           </div>
 
@@ -102,16 +108,16 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-7 h-7 rounded-md bg-slate-800 border border-slate-700/60 p-1 flex items-center justify-center shrink-0">
               <img
-                src={match.awayTeam.crestUrl}
-                alt={match.awayTeam.name}
+                src={awayTeam.crestUrl || defaultCrest}
+                alt={awayTeam.name}
                 className="w-full h-full object-contain"
                 onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
+                  (e.target as HTMLImageElement).src = defaultCrest;
                 }}
               />
             </div>
             <span className="text-sm font-semibold text-white truncate group-hover:text-emerald-300 transition-colors">
-              {match.awayTeam.name}
+              {awayTeam.name}
             </span>
           </div>
 

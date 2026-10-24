@@ -22,6 +22,10 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
 
   const isLive = featuredMatch.status === 'IN_PLAY';
 
+  const defaultCrest = 'https://a.espncdn.com/i/teamlogos/soccer/500/default-team-logo.png';
+  const homeTeam = featuredMatch.homeTeam || { id: '', name: 'Mezbon', shortName: 'Mezbon', crestUrl: defaultCrest, tla: 'HOM', leagueId: '' };
+  const awayTeam = featuredMatch.awayTeam || { id: '', name: 'Mehmon', shortName: 'Mehmon', crestUrl: defaultCrest, tla: 'AWY', leagueId: '' };
+
   return (
     <div className="relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl">
       {/* Background Stadium Backdrop with Scrim */}
@@ -58,17 +62,17 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
             <div className="flex flex-col items-center sm:items-start text-center sm:text-left gap-3 flex-1">
               <div className="w-16 h-16 rounded-xl bg-slate-900 border border-slate-800 p-2 flex items-center justify-center">
                 <img
-                  src={featuredMatch.homeTeam.crestUrl}
-                  alt={featuredMatch.homeTeam.name}
+                  src={homeTeam.crestUrl || defaultCrest}
+                  alt={homeTeam.name}
                   className="w-full h-full object-contain"
                   onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
+                    (e.target as HTMLImageElement).src = defaultCrest;
                   }}
                 />
               </div>
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                  {featuredMatch.homeTeam.name}
+                  {homeTeam.name}
                 </h3>
                 <span className="text-xs text-slate-400">Mezbon</span>
               </div>
@@ -100,7 +104,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
                 <div className="text-center">
                   <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Boshlanish vaqti</div>
                   <div className="text-2xl font-bold text-emerald-400 font-mono mt-0.5">
-                    {featuredMatch.kickoffTashkent.split(',')[0]}
+                    {featuredMatch.kickoffTashkent?.split(',')?.[0] || 'Bugun'}
                   </div>
                 </div>
               )}
@@ -114,17 +118,17 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
             <div className="flex flex-col items-center sm:items-end text-center sm:text-right gap-3 flex-1">
               <div className="w-16 h-16 rounded-xl bg-slate-900 border border-slate-800 p-2 flex items-center justify-center">
                 <img
-                  src={featuredMatch.awayTeam.crestUrl}
-                  alt={featuredMatch.awayTeam.name}
+                  src={awayTeam.crestUrl || defaultCrest}
+                  alt={awayTeam.name}
                   className="w-full h-full object-contain"
                   onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
+                    (e.target as HTMLImageElement).src = defaultCrest;
                   }}
                 />
               </div>
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                  {featuredMatch.awayTeam.name}
+                  {awayTeam.name}
                 </h3>
                 <span className="text-xs text-slate-400">Mehmon</span>
               </div>

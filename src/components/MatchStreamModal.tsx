@@ -32,6 +32,10 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
   const isLive = match.status === 'IN_PLAY';
   const broadcaster = match.broadcaster;
 
+  const defaultCrest = 'https://a.espncdn.com/i/teamlogos/soccer/500/default-team-logo.png';
+  const homeTeam = match.homeTeam || { id: '', name: 'Mezbon', shortName: 'Mezbon', crestUrl: defaultCrest, tla: 'HOM', leagueId: '' };
+  const awayTeam = match.awayTeam || { id: '', name: 'Mehmon', shortName: 'Mehmon', crestUrl: defaultCrest, tla: 'AWY', leagueId: '' };
+
   // Build sources list from match or defaults (Pure football live streams)
   const sources: StreamSource[] = (match.streamSources && match.streamSources.length > 0)
     ? match.streamSources
@@ -86,8 +90,8 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: `${match.homeTeam.name} vs ${match.awayTeam.name} - Jonli Efir`,
-        text: `${match.homeTeam.name} vs ${match.awayTeam.name} o'yinini jonli tomosha qiling!`,
+        title: `${homeTeam.name} vs ${awayTeam.name} - Jonli Efir`,
+        text: `${homeTeam.name} vs ${awayTeam.name} o'yinini jonli tomosha qiling!`,
         url: window.location.href,
       }).catch(() => {});
     } else {
@@ -135,7 +139,7 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
             <VideoPlayer
               streamUrl={activeSource.url}
               streamType={activeSource.type}
-              title={`${match.homeTeam.shortName} vs ${match.awayTeam.shortName}`}
+              title={`${homeTeam.shortName} vs ${awayTeam.shortName}`}
               autoPlay={isLive}
               onSwitchSource={handleSwitchToNextSource}
             />
@@ -178,15 +182,15 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
             {/* Home Team */}
             <div className="flex items-center gap-3 flex-1">
               <img
-                src={match.homeTeam.crestUrl}
-                alt={match.homeTeam.name}
+                src={homeTeam.crestUrl || defaultCrest}
+                alt={homeTeam.name}
                 className="w-10 h-10 object-contain rounded-full bg-slate-800/50 p-1"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=80&auto=format&fit=crop&q=80';
+                  (e.target as HTMLImageElement).src = defaultCrest;
                 }}
               />
               <div>
-                <h4 className="text-sm font-bold text-white">{match.homeTeam.name}</h4>
+                <h4 className="text-sm font-bold text-white">{homeTeam.name}</h4>
                 <span className="text-[11px] text-slate-400">Mezbon</span>
               </div>
             </div>
@@ -216,15 +220,15 @@ export const MatchStreamModal: React.FC<MatchStreamModalProps> = ({ match, onClo
             {/* Away Team */}
             <div className="flex items-center justify-end gap-3 flex-1 text-right">
               <div>
-                <h4 className="text-sm font-bold text-white">{match.awayTeam.name}</h4>
+                <h4 className="text-sm font-bold text-white">{awayTeam.name}</h4>
                 <span className="text-[11px] text-slate-400">Mehmon</span>
               </div>
               <img
-                src={match.awayTeam.crestUrl}
-                alt={match.awayTeam.name}
+                src={awayTeam.crestUrl || defaultCrest}
+                alt={awayTeam.name}
                 className="w-10 h-10 object-contain rounded-full bg-slate-800/50 p-1"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=80&auto=format&fit=crop&q=80';
+                  (e.target as HTMLImageElement).src = defaultCrest;
                 }}
               />
             </div>

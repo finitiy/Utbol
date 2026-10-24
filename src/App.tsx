@@ -177,7 +177,7 @@ export default function App() {
     }
     if (currentTab === 'favorites') {
       const favs = currentUser?.favoriteTeamIds || [];
-      if (!favs.includes(m.homeTeam.id) && !favs.includes(m.awayTeam.id)) return false;
+      if (!favs.includes(m.homeTeam?.id || '') && !favs.includes(m.awayTeam?.id || '')) return false;
     }
     if (statusFilter === 'LIVE' && m.status !== 'IN_PLAY') return false;
     if (statusFilter === 'SCHEDULED' && m.status !== 'SCHEDULED') return false;
@@ -185,7 +185,7 @@ export default function App() {
     if (selectedLeagueId !== 'ALL' && m.leagueId !== selectedLeagueId) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      const matchText = `${m.homeTeam.name} ${m.awayTeam.name} ${m.leagueName} ${m.venue || ''}`.toLowerCase();
+      const matchText = `${m.homeTeam?.name || ''} ${m.awayTeam?.name || ''} ${m.leagueName || ''} ${m.venue || ''}`.toLowerCase();
       if (!matchText.includes(q)) return false;
     }
     return true;
@@ -416,7 +416,7 @@ export default function App() {
                         <MatchCard
                           key={match.id}
                           match={match}
-                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam?.id || ''))}
                           onToggleFavorite={handleToggleFavorite}
                           onSelectMatch={(m) => setSelectedMatchForStream(m)}
                         />
@@ -448,7 +448,7 @@ export default function App() {
                         <MatchCard
                           key={match.id}
                           match={match}
-                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam?.id || ''))}
                           onToggleFavorite={handleToggleFavorite}
                           onSelectMatch={(m) => setSelectedMatchForStream(m)}
                         />
@@ -477,7 +477,7 @@ export default function App() {
                         <MatchCard
                           key={match.id}
                           match={match}
-                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam?.id || ''))}
                           onToggleFavorite={handleToggleFavorite}
                           onSelectMatch={(m) => setSelectedMatchForStream(m)}
                         />
@@ -506,7 +506,7 @@ export default function App() {
                         <MatchCard
                           key={match.id}
                           match={match}
-                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                          isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam?.id || ''))}
                           onToggleFavorite={handleToggleFavorite}
                           onSelectMatch={(m) => setSelectedMatchForStream(m)}
                         />
@@ -522,7 +522,7 @@ export default function App() {
                   <MatchCard
                     key={match.id}
                     match={match}
-                    isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam.id))}
+                    isFavorite={Boolean(currentUser?.favoriteTeamIds?.includes(match.homeTeam?.id || ''))}
                     onToggleFavorite={handleToggleFavorite}
                     onSelectMatch={(m) => setSelectedMatchForStream(m)}
                   />

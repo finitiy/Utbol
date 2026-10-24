@@ -282,6 +282,7 @@ class DatabaseStore {
       { id: 'eu-nottingham', name: 'Nottingham Forest', shortName: 'Nottm Forest', tla: 'NFO', crestUrl: 'https://crests.football-data.org/351.png', leagueId: 'league-epl', stadium: "City Ground, Nottingham" },
       { id: 'eu-leicester', name: 'Leicester City', shortName: 'Leicester', tla: 'LEI', crestUrl: 'https://crests.football-data.org/338.png', leagueId: 'league-epl', stadium: "King Power Stadium, Leicester" },
       { id: 'eu-betis', name: 'Real Betis', shortName: 'Betis', tla: 'BET', crestUrl: 'https://crests.football-data.org/90.png', leagueId: 'league-laliga', stadium: "Benito Villamarín, Sevilya" },
+      { id: 'eu-atletico', name: 'Atlético Madrid', shortName: 'Atlético', tla: 'ATM', crestUrl: 'https://crests.football-data.org/78.png', leagueId: 'league-laliga', stadium: 'Cívitas Metropolitano, Madrid' },
       { id: 'eu-sevilla', name: 'Sevilla FC', shortName: 'Sevilla', tla: 'SEV', crestUrl: 'https://crests.football-data.org/559.png', leagueId: 'league-laliga', stadium: "Ramón Sánchez-Pizjuán, Sevilya" },
       { id: 'eu-espanyol', name: 'RCD Espanyol', shortName: 'Espanyol', tla: 'ESP', crestUrl: 'https://crests.football-data.org/80.png', leagueId: 'league-laliga', stadium: "Stage Front Stadium, Barselona" },
       { id: 'eu-bvb', name: 'Borussia Dortmund', shortName: 'Dortmund', tla: 'BVB', crestUrl: 'https://crests.football-data.org/4.png', leagueId: 'league-ucl', stadium: "Signal Iduna Park, Dortmund" },
